@@ -80,11 +80,11 @@ class synscanMount(synscancomm.synscanComm):
 
     def get_values(self,parameterDict):
         params=dict()
-        for parameter,cmd in parameterDict.items():
-            params[parameter]=dict()
-            for axis in range(1,3):
+        for axis in range(1,3):
+            params[axis]=dict()
+            for parameter,cmd in parameterDict.items():
                 try:
-                    params[parameter][axis]=self.send_cmd(cmd,axis)
+                    params[axis][parameter]=self.send_cmd(cmd,axis)
                 except NameError as error:
                     logging.warning(error)
                     raise(NameError('getValuesError'))
@@ -103,12 +103,12 @@ class synscanMount(synscancomm.synscanComm):
                 speedBit=0x0
         value = (Tracking & 0x01) | (speedBit << 1) | ((CW & 0x01) <<7) 
         response=self.send_cmd('G',axis,value,ndigits=2)
-        logging.info(f'Setting Motion Mode: {value}')
+        logging.info(f'AXIS{axis}:Setting Motion Mode: {value}')
         return response        
 
     def set_step_period(self,axis,value):
         response=self.send_cmd('I',axis,value)
-        logging.info(f'Setting step_period to: {value}')
+        logging.info(f'AXIS{axis}:Setting step_period to: {value}')
         return response
 
     def get_axis_pos(self,axis):
@@ -117,10 +117,12 @@ class synscanMount(synscancomm.synscanComm):
 
     def set_goto_target(self,axis,target):
         response=self.send_cmd('S',axis,target+0x800000)
+        logging.info(f'AXIS{axis}:Setting goto target to {value}')
         return response
 
     def start_motion(self,axis):
         response=self.send_cmd('J',axis)
+        logging.info(f'AXIS{axis}:Start motion to {value}')
         return response
 
     def stop_motion(self,axis):
