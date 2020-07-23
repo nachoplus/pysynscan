@@ -24,7 +24,6 @@ class synscanComm:
         #self.test_comm()
     
     def send_raw_cmd(self,cmd,timeout_in_seconds=2):
-        logging.debug(f"Sending cmd:{cmd}")
         self.sock.sendto(cmd,(self.udp_ip,self.udp_port))
         ready = select.select([self.sock], [], [], timeout_in_seconds)
         if ready[0]:
@@ -38,11 +37,11 @@ class synscanComm:
             response = False
         return response
 
-    def send_cmd(self,cmd,axis,data=None):
+    def send_cmd(self,cmd,axis,data=None,ndigits=6):
         if data is None:
             msg=bytes(f':{cmd}{axis}\r','utf-8')
         else:
-            msg=bytes(f':{cmd}{axis}{self.int2hex(data)}\r','utf-8')
+            msg=bytes(f':{cmd}{axis}{self.int2hex(data,ndigits)}\r','utf-8')
         logging.debug(f'sending cmd:{msg}')
         raw_response=self.send_raw_cmd(msg)
         if raw_response[0]!=61:
@@ -72,16 +71,23 @@ class synscanComm:
         strData=data.decode("utf-8") 
         length=len(strData)
         assert (length<=6), f"Max allow value is FFFFFF. Actual={strData}"
+        #Special cases
+        #Some commands dont send data
+        if length==0:
+            return ''
+        #Status msg only has 3 bytes
+        if length==3:
+            logging.debug(f'3bytes response. Not converting to init. Send as it as string')        
+            return strData
+
         logging.debug(f'Converting {strData} to a integer')
         strHEX=''
         for i in range(length,0,-2):
             strHEX=strHEX+f'{strData[i-2:i]}'
-        if length==0:
-            return ''
-        else:
-            v=int(strHEX,16)
-            logging.debug(f'{strData}(synscan hex) => {strHEX}(hex) => {v}(decimal)')
-            return v
+
+        v=int(strHEX,16)
+        logging.debug(f'{strData}(synscan hex) => {strHEX}(hex) => {v}(decimal)')
+        return v
 
     def test_comm(self):
         MESSAGE = b":F3\r"
