@@ -199,7 +199,7 @@ class synscanMotors(synscanComm.synscanComm):
         return response
 
     def get_axis_pos(self,axis):
-        '''Get actaul postion in StepsCounts.'''
+        '''Get actual postion in StepsCounts.'''
         #Position values are offseting by 0x800000
         response=self.send_cmd('j',axis)-0x800000
         return response

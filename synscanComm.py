@@ -58,12 +58,34 @@ class synscanComm:
         msg=bytes(f':{cmd}{axis}{self.int2hex(data,ndigits)}\r','utf-8')
         logging.debug(f'sending cmd:{msg}')
         raw_response=self.send_raw_cmd(msg)
-        if raw_response[0]!=61:
-            logging.warning(f'Error {raw_response[0]}. Response:{raw_response}')
-            raise(NameError('SynscanCommandError'))
+
+        #If everything is OK first char must be '=' (code 61)
+        if raw_response[0]==61:
+            response=self.hex2int(raw_response[1:-1])
+            return response
+
+        #If something goes wrong first char must be '!' (code 33)
+        if raw_response[0]==33:
+            ErrorDict={0:'UnknownCommand',1:'CommandLengthError',2:'MotorNotStopped',3:'InvalidCharacter',
+                       4:'NotInitialized',5:'DriverSleeping',7:'PECTrainingIsRunning',8:'NoValidPECdata'}
+            errorNumber=self.hex2int(raw_response[1:-1])
+            if errorNumber not in [0,1,2,3,4,5,7,8]:
+                logging.warning(f'Unknown Error {raw_response}')
+                raise(NameError('CMDUnknowError'))
+                return False                    
+            errorStr=ErrorDict[errorNumber]
+            logging.warning(f'CMD Error:{errorStr} {raw_response}')
+            raise(NameError(errorStr))
             return False
-        response=self.hex2int(raw_response[1:-1])
-        return response
+        #Catch the rest
+        else:
+            logging.warning(f'Unknown Error {raw_response}')
+            raise(NameError('CMDUnknowError'))
+            return False
+
+
+
+
 
     def int2hex(self,data,ndigits=6):
         ''' Convert data prior to send to the motors following 
