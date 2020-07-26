@@ -17,7 +17,7 @@ LOGGING_LEVEL=os.getenv("SYNSCAN_LOGGING_LEVEL",logging.INFO)
 class synscanComm:
     '''
     UDP Comunication module.
-    Virtual. Use as base class.
+    Virtual. Used as base class.
     '''
     def __init__(self,udp_ip=UDP_IP,udp_port=UDP_PORT):
         ''' Init the UDP socket '''

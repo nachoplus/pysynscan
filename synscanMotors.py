@@ -66,6 +66,24 @@ class synscanMotors(synscanComm.synscanComm):
             time.sleep(retrySec)
             self.init()
 
+    def degrees2counts(self,axis,degrees):
+        '''Return position or speed in counts for a given deg or deg/seconds value'''
+        CPR=self.params[axis]['countsPerRevolution']
+        value=degrees*CPR/360
+        return value
+
+    def counts2degrees(self,axis,counts):
+        '''Return position or speed in degrees for a given counts or counts/seconds value'''
+        CPR=self.params[axis]['countsPerRevolution']
+        value=counts*360/CPR
+        return value
+
+    def T1preset(self,axis,degreesPerSecond):
+        countsPerSecond=self.degrees2counts(axis,degreesPerSecond)
+        TMR_Freq=self.params[axis]['TimerInterruptFreq']
+        T1preset=TMR_Freq/countsPerSecond
+        return T1preset
+
 
     def get_values(self,parameterDict):
         '''
@@ -91,7 +109,7 @@ class synscanMotors(synscanComm.synscanComm):
         so they have to be available to the rest of the code
         '''
         parameterDict={ 'countsPerRevolution':'a',
-                        'TimerInterrup':'b',
+                        'TimerInterruptFreq':'b',
                         'StepPeriod':'i',
                         'MotorBoardVersion':'e'
                         }
@@ -102,6 +120,7 @@ class synscanMotors(synscanComm.synscanComm):
             raise(NameError('getParametersError'))
             return {}
         logging.info(f'MOUNT PARAMETERS: {params}')
+        self.CPR=params
         return params
 
     def get_current_values(self):
@@ -142,7 +161,7 @@ class synscanMotors(synscanComm.synscanComm):
         B1: 1 = Level switch on
 
         '''
-        A=int(hexstring[0],16)
+        A=int(hexstring[0],16)       
         B=int(hexstring[1],16)
         C=int(hexstring[2],16)
         logging.debug(f'Decode status {hexstring} A:{A} B:{B} C:{C}')
@@ -198,6 +217,10 @@ class synscanMotors(synscanComm.synscanComm):
         logging.info(f'AXIS{axis}:Setting step_period to: {value}')
         return response
 
+    def set_speed(self,axis,degreesPerSecond):
+        '''Set the tracking speed in degreesPerSecond'''
+        self.set_step_period(axis,int(self.T1preset(axis,degreesPerSecond)))
+
     def get_axis_pos(self,axis):
         '''Get actual postion in StepsCounts.'''
         #Position values are offseting by 0x800000
@@ -208,7 +231,7 @@ class synscanMotors(synscanComm.synscanComm):
         '''GoTo Target value in StepsCounts. Motors has to be stopped'''
         #Position values are offseting by 0x800000
         response=self.send_cmd('S',axis,target+0x800000)
-        logging.info(f'AXIS{axis}:Setting goto target to {target}')
+        logging.info(f'AXIS{axis}:Setting goto target to {target} counts')
         return response
 
     def start_motion(self,axis):
@@ -222,17 +245,22 @@ class synscanMotors(synscanComm.synscanComm):
         response=self.send_cmd('K',axis)
         return response
 
+    def test_goto(self,axis=2,X=90):
+        '''Test GOTO'''
+        self.stop_motion(axis)
+        self.set_motion_mode(axis,False,False,False)
+        self.set_speed(axis,5)
+        posCounts=self.degrees2counts(axis,X)
+        self.set_goto_target(axis,int(posCounts))
+        self.start_motion(axis)
+        params=self.get_current_values()[axis]
+        print(params)
+        while not params['Status']['Stopped']:
+            time.sleep(2)
+            params=self.get_current_values()[axis]
+            print(params)
 
 if __name__ == '__main__':
     smc=synscanMotors()
-    print(smc.get_current_values())
-    smc.stop_motion(3)
-    AXIS=1
-    smc.set_goto_target(AXIS,0)
-    smc.set_motion_mode(AXIS,1,1,0)
-    smc.set_step_period(AXIS,54)
-    smc.get_parameters()
-    smc.start_motion(AXIS)
-    while True:
-        time.sleep(2)
-        print(smc.get_current_values()[AXIS])
+    smc.test_goto()
+
