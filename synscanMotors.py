@@ -26,7 +26,7 @@ class synscanMotors(synscanComm.synscanComm):
     for stepper motor or reference position for servomotor. The input clock’s frequency of the timer,
     plus the preset value of this timer, determine the slewing speed of the motors. 
 
-    ** For GOTO mode, the motor controller will take care of T1 automatically. **
+    ** For GOTO mode, the motor controller will take care of T1 automatically. But motion mode has to be set to tracking=False**
 
     When T1 generates an interrupt, it might:
         * Drive the motor to move 1 step (1 micro-step or 1 encoder tick) for low speed slewing.
@@ -48,11 +48,12 @@ class synscanMotors(synscanComm.synscanComm):
     def __init__(self):
         '''Init UDP comunication '''      
         logging.basicConfig(
-            format='%(asctime)s %(levelname)s:synscanAPI %(message)s',
+            format='%(asctime)s %(levelname)s:synscanMotor: %(message)s',
             level=LOGGING_LEVEL
             )
         super(synscanMotors, self).__init__(udp_ip=UDP_IP,udp_port=UDP_PORT)
         self.init()
+        self.update_current_values()
 
 
     def init(self):
@@ -78,7 +79,7 @@ class synscanMotors(synscanComm.synscanComm):
         value=counts*360/CPR
         return value
 
-    def T1preset(self,axis,degreesPerSecond):
+    def degreesPerSecond2T1preset(self,axis,degreesPerSecond):
         countsPerSecond=self.degrees2counts(axis,degreesPerSecond)
         TMR_Freq=self.params[axis]['TimerInterruptFreq']
         T1preset=TMR_Freq/countsPerSecond
@@ -89,7 +90,7 @@ class synscanMotors(synscanComm.synscanComm):
         '''
         Send all cmd in the parameterDict for both axis and return
         a dictionary with the values.
-        Used by get_parameters and get_current_values functions
+        Used by get_parameters and update_current_values functions
         '''
         params=dict()
         for axis in range(1,3):
@@ -111,7 +112,8 @@ class synscanMotors(synscanComm.synscanComm):
         parameterDict={ 'countsPerRevolution':'a',
                         'TimerInterruptFreq':'b',
                         'StepPeriod':'i',
-                        'MotorBoardVersion':'e'
+                        'MotorBoardVersion':'e',
+                        'HighSpeedRatio':'g',
                         }
         try:
             params=self.get_values(parameterDict)
@@ -120,10 +122,9 @@ class synscanMotors(synscanComm.synscanComm):
             raise(NameError('getParametersError'))
             return {}
         logging.info(f'MOUNT PARAMETERS: {params}')
-        self.CPR=params
         return params
 
-    def get_current_values(self):
+    def update_current_values(self,logaxis=2):
         '''Get current status and values'''
         parameterDict={ 'GotoTarget':'h',
                         'Position':'j',
@@ -141,6 +142,11 @@ class synscanMotors(synscanComm.synscanComm):
                 params[axis][parameter]=params[axis][parameter]-0x800000
         for axis in range(1,3):
             params[axis]['Status']=self.decode_status(params[axis]['Status'])
+        self.values=params
+        if logaxis==3:
+            logging.info(f'Actual values {params}')
+        if logaxis in [1,2]:
+            logging.info(f'AXIS{logaxis} {params[logaxis]}')
         return params
 
     def decode_status(self,hexstring):
@@ -176,7 +182,7 @@ class synscanMotors(synscanComm.synscanComm):
         return status
 
 
-    def set_motion_mode(self,axis,Tracking,fastSpeed,CW):
+    def set_motion_mode(self,axis,Tracking,CW,fastSpeed):
         '''Set Motion Mode.
 
         Channel will always be set to Tracking Mode after stopped
@@ -185,8 +191,8 @@ class synscanMotors(synscanComm.synscanComm):
 
         HEX Digit 1 bits:
         B0: 0=Goto, 1=Tracking
-        B1: 0=Slow, 1=Fast(T)
-            0=Fast, 1=Slow(G)
+        B1: 0=Slow, 1=Fast  (T)
+            0=Fast, 1=Slow  (G)
         B2: 0=S/F, 1=Medium
         B3: 1x SlowGoto
 
@@ -195,72 +201,154 @@ class synscanMotors(synscanComm.synscanComm):
         B1: 0=Noth,1=South
         B2: 0=Normal Goto,1=Coarse Goto
         '''
-        if Tracking:
+        if not Tracking:
             if fastSpeed:
-                speedBit=0x0
+                speedBit=0
             else:
-                speedBit=0x1
+                speedBit=1
         else:
             if fastSpeed:
-                speedBit=0x1
+                speedBit=1
             else:
-                speedBit=0x0
-        value = (Tracking & 0x01) | (speedBit << 1) | ((CW & 0x01) <<7) 
+                speedBit=0
+        if Tracking:
+            value=16
+        else:
+            value=0
+        value=value+speedBit*32+CW
         #Send as two HEX digits
+        logging.info(f'AXIS{axis}: Setting Motion Mode: {value} HEX:{value:02X}')
         response=self.send_cmd('G',axis,value,ndigits=2) 
-        logging.info(f'AXIS{axis}:Setting Motion Mode: {value}')
         return response        
 
-    def set_step_period(self,axis,value):
+    def set_T1_preset(self,axis,value):
         '''Set step period for tracking speed'''
+        logging.info(f'AXIS{axis}: Setting step_period to: {value} counts per seconds')
         response=self.send_cmd('I',axis,value)
-        logging.info(f'AXIS{axis}:Setting step_period to: {value}')
         return response
 
-    def set_speed(self,axis,degreesPerSecond):
-        '''Set the tracking speed in degreesPerSecond'''
-        self.set_step_period(axis,int(self.T1preset(axis,degreesPerSecond)))
-
-    def get_axis_pos(self,axis):
+    def get_axis_posCounts(self,axis):
         '''Get actual postion in StepsCounts.'''
         #Position values are offseting by 0x800000
         response=self.send_cmd('j',axis)-0x800000
         return response
 
-    def set_goto_target(self,axis,target):
+    def set_goto_targetCounts(self,axis,targetCounts):
         '''GoTo Target value in StepsCounts. Motors has to be stopped'''
+        logging.info(f'AXIS{axis}: Setting goto target to {targetCounts} counts')
         #Position values are offseting by 0x800000
-        response=self.send_cmd('S',axis,target+0x800000)
-        logging.info(f'AXIS{axis}:Setting goto target to {target} counts')
+        response=self.send_cmd('S',axis,targetCounts+0x800000)
+        return response
+
+    def wait2stop(self,axis):    
+        logging.info(f'AXIS{axis}: Waitting to stop.')
+        self.update_current_values()
+        while not self.values[axis]['Status']['Stopped']:
+            self.update_current_values()
+        logging.info(f'AXIS{axis}: Stopped')
+
+    def set_posCounts(self,axis,counts):
+        '''Syncronize position Counts.'''
+        logging.info(f'AXIS{axis}: Syncronizing actual position to {counts} counts')
+        #Position values are offseting by 0x800000
+        response=self.send_cmd('L',axis,counts+0x800000)
+        return response
+
+
+    #HIGH LEVEL API (arguments in degrees)
+    def set_switch(self,on):
+        '''Switch on/off auxiliary switch'''
+        if on:
+            value=1
+        else:
+            value=0
+        logging.info(f'Auxiliary swtich: {on}')
+        response=self.send_cmd('O',value)
+        return response
+
+    def get_axis_pos(self,axis):
+        '''Get actual position in Degrees.'''
+        counts=self.get_axis_posCounts(axis)
+        return self.counts2degrees(counts)
+
+    def set_pos(self,axis,degrees):
+        '''Syncronize position Degrees.'''
+        logging.info(f'AXIS{axis}: Syncronizing actual position to {degrees} degrees')
+        counts=self.degrees2counts(axis,degrees)
+        response=self.set_posCounts(axis,int(counts))
+
+    def set_goto_target(self,axis,targetDegrees):
+        '''GoTo Target value in Degrees. Motors has to be stopped'''
+        logging.info(f'AXIS{axis}: Setting goto target to {targetDegrees} degrees')
+        posCounts=self.degrees2counts(axis,targetDegrees)
+        response=self.set_goto_targetCounts(axis,int(posCounts))
+        return response
+
+    def set_speed(self,axis,degreesPerSecond):
+        '''Set the tracking speed in degreesPerSecond'''
+        logging.info(f'AXIS{axis}: Setting speed to:{degreesPerSecond} degrees per second')
+        response=self.set_T1_preset(axis,int(self.degreesPerSecond2T1preset(axis,degreesPerSecond)))
         return response
 
     def start_motion(self,axis):
         '''Start Goto'''
         response=self.send_cmd('J',axis)
-        logging.info(f'AXIS{axis}:Starting motion')
+        logging.info(f'AXIS{axis}: Starting motion')
         return response
 
-    def stop_motion(self,axis):
-        '''Soft stop'''
+    def stop_motion(self,axis,syncronous=True):
+        '''Soft stop. If syncronous==True wait to finish'''
+        logging.info(f'AXIS{axis}: Stopping')
         response=self.send_cmd('K',axis)
+        if syncronous:
+            self.wait2stop(axis)
+        else:
+            logging.info(f'AXIS{axis}: Ask to stop. In progress')
         return response
 
     def test_goto(self,axis=2,X=90):
-        '''Test GOTO'''
+        '''Test GOTO. X in degrees'''
+        logging.info(f'AXIS{axis}: GOTO test')
         self.stop_motion(axis)
         self.set_motion_mode(axis,False,False,False)
-        self.set_speed(axis,5)
-        posCounts=self.degrees2counts(axis,X)
-        self.set_goto_target(axis,int(posCounts))
+        self.set_goto_target(axis,X)
         self.start_motion(axis)
-        params=self.get_current_values()[axis]
-        print(params)
-        while not params['Status']['Stopped']:
+        self.update_current_values(AXIS)
+        while not self.values[axis]['Status']['Stopped']:
             time.sleep(2)
-            params=self.get_current_values()[axis]
-            print(params)
+            self.update_current_values(AXIS)
+            print(self.values[axis])
+
+    def test_slew(self,axis=1,speed=1):
+        '''Test SLEW'''
+        logging.info(f'AXIS{axis}: SLEW test')
+        self.stop_motion(axis)
+        self.update_current_values(AXIS)
+        self.set_speed(axis,speed)
+        self.set_motion_mode(axis,True,True,True)
+        self.update_current_values(AXIS)
+        self.start_motion(axis)
+        self.update_current_values(AXIS)
+
+
 
 if __name__ == '__main__':
     smc=synscanMotors()
-    smc.test_goto()
+
+    #AXIS to test
+    AXIS=2
+    
+    #Test GOTO
+    if True:
+        smc.test_goto(axis=AXIS,X=45)
+        smc.test_goto(axis=AXIS,X=0)
+        exit(0)
+
+    #Test SLEW
+    if False:
+        smc.test_slew(axis=AXIS,speed=.5)
+        while True:
+                time.sleep(2)
+                smc.update_current_values(AXIS)
+        exit(0)
 
