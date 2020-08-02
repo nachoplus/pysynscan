@@ -1,17 +1,21 @@
-# pysynscan
+pysynscan
+=========
 
-A pure python3 implementation of skywatcher synscan motor protocol
+A pure python3 implementation of skywatcher synscan motor protocol. Tested on SkyWatcher AZ-GTI mount and open-synscan project
 
-#Instalation
-From sources:
+Instalation
+-----------
+From sources::
 
-git clone https://github.com/nachoplus/pysynscan.git
-python3 setup.py install
+    git clone https://github.com/nachoplus/pysynscan.git
+    python3 setup.py install
 
-#Use
+Use
+---
+
 Several code examples are in examples directory
 
-Also some cli (command lines interface) are provided:
+Also some CLI (command lines interface) are provided:
 
 * synscanGoto::
 
@@ -36,6 +40,6 @@ Also some cli (command lines interface) are provided:
     Options:
       --host TEXT       Synscan mount IP address
       --port INTEGER    Synscan mount port
-      --azSpeed FLOAT   Azimuth speed (degrees per second)
-      --altSpeed FLOAT  Altitude speed (degrees per second)
+      --azspeed FLOAT   Azimuth speed (degrees per second)
+      --altspeed FLOAT  Altitude speed (degrees per second)
       --help            Show this message and exit.
