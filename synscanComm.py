@@ -74,7 +74,7 @@ class synscanComm:
                 raise(NameError('CMDUnknowError'))
                 return False                    
             errorStr=ErrorDict[errorNumber]
-            logging.warning(f'CMD Error:{errorStr} {raw_response}')
+            logging.warning(f'CMD:{msg} Error:{errorStr} {raw_response}')
             raise(NameError(errorStr))
             return False
         #Catch the rest

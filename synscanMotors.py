@@ -82,7 +82,10 @@ class synscanMotors(synscanComm.synscanComm):
     def degreesPerSecond2T1preset(self,axis,degreesPerSecond):
         countsPerSecond=self.degrees2counts(axis,degreesPerSecond)
         TMR_Freq=self.params[axis]['TimerInterruptFreq']
-        T1preset=TMR_Freq/countsPerSecond
+        if abs(countsPerSecond) <=0:
+            T1preset=TMR_Freq
+        else:
+            T1preset=TMR_Freq/abs(countsPerSecond)
         return T1preset
 
 
@@ -182,7 +185,7 @@ class synscanMotors(synscanComm.synscanComm):
         return status
 
 
-    def set_motion_mode(self,axis,Tracking,CW,fastSpeed):
+    def set_motion_mode(self,axis,Tracking,CW=True,fastSpeed=False):
         '''Set Motion Mode.
 
         Channel will always be set to Tracking Mode after stopped
@@ -244,6 +247,7 @@ class synscanMotors(synscanComm.synscanComm):
         logging.info(f'AXIS{axis}: Waitting to stop.')
         self.update_current_values()
         while not self.values[axis]['Status']['Stopped']:
+            time.sleep(2)
             self.update_current_values()
         logging.info(f'AXIS{axis}: Stopped')
 
@@ -251,7 +255,7 @@ class synscanMotors(synscanComm.synscanComm):
         '''Syncronize position Counts.'''
         logging.info(f'AXIS{axis}: Syncronizing actual position to {counts} counts')
         #Position values are offseting by 0x800000
-        response=self.send_cmd('L',axis,counts+0x800000)
+        response=self.send_cmd('E',axis,counts+0x800000)
         return response
 
 
@@ -271,11 +275,15 @@ class synscanMotors(synscanComm.synscanComm):
         counts=self.get_axis_posCounts(axis)
         return self.counts2degrees(counts)
 
-    def set_pos(self,axis,degrees):
+    def set_axis_pos(self,axis,degrees):
         '''Syncronize position Degrees.'''
         logging.info(f'AXIS{axis}: Syncronizing actual position to {degrees} degrees')
         counts=self.degrees2counts(axis,degrees)
         response=self.set_posCounts(axis,int(counts))
+
+    def set_pos(self,alpha,beta):
+        self.set_axis_pos(1,alpha)
+        self.set_axis_pos(1,beta)
 
     def set_goto_target(self,axis,targetDegrees):
         '''GoTo Target value in Degrees. Motors has to be stopped'''
@@ -284,11 +292,42 @@ class synscanMotors(synscanComm.synscanComm):
         response=self.set_goto_targetCounts(axis,int(posCounts))
         return response
 
+    def goto_axis(self,axis,targetDegrees):
+        self.stop_motion(axis)
+        self.set_motion_mode(axis,False,False,False)
+        self.set_goto_target(axis,targetDegrees)
+        self.start_motion(axis)
+
     def set_speed(self,axis,degreesPerSecond):
         '''Set the tracking speed in degreesPerSecond'''
         logging.info(f'AXIS{axis}: Setting speed to:{degreesPerSecond} degrees per second')
-        response=self.set_T1_preset(axis,int(self.degreesPerSecond2T1preset(axis,degreesPerSecond)))
+        if degreesPerSecond!=0:
+            response=self.set_T1_preset(axis,int(self.degreesPerSecond2T1preset(axis,abs(degreesPerSecond))))
+        else:
+            response=self.stop_motion(axis)
         return response
+
+    def track_axis(self,axis,speed):
+        #Check if we need to stop axis
+        self.update_current_values(axis)
+        stopped=self.values[axis]['Status']['Stopped']
+        CW=not self.values[axis]['Status']['CCW']
+        tracking=self.values[axis]['Status']['Tracking']
+        if not stopped:
+            if not tracking or (CW and (speed <0)) or (not CW and (speed >0)):
+                logging.info(f'TRACK asked to change dir or mode tracking:{tracking} CW:{CW} speed:{speed}')
+                self.stop_motion(axis,syncronous=True)
+                self.set_motion_mode(axis,True,(speed <0),False)
+                self.set_speed(axis,speed)
+                self.start_motion(axis)
+                return 
+            else:
+                self.set_speed(axis,speed)
+                return 
+        else:
+            self.set_speed(axis,speed)
+            self.start_motion(axis)
+            return
 
     def start_motion(self,axis):
         '''Start Goto'''
@@ -306,40 +345,58 @@ class synscanMotors(synscanComm.synscanComm):
             logging.info(f'AXIS{axis}: Ask to stop. In progress')
         return response
 
+    def goto(self,alpha,beta,syncronous=True):
+        '''GOTO. alpha,beta in degrees'''
+        logging.info(f'GOTO axis1={alpha} axis2={beta} degrees')
+        for axis in [1,2]:
+            self.stop_motion(axis)
+            self.set_motion_mode(axis,False,False,False)
+        self.set_goto_target(1,alpha)
+        self.set_goto_target(2,beta)
+        for axis in [1,2]:
+            self.start_motion(axis)
+        if syncronous:
+            for axis in [1,2]:
+                self.wait2stop(axis)
+
+
+    def track(self,alpha,beta):
+        '''GOTO. alpha,beta in degrees per second'''
+        logging.info(f'TRACK speeds axis1={alpha} axis2={beta} degrees per seconds')
+        self.track_axis(1,alpha)
+        self.track_axis(2,beta)
+
     def test_goto(self,axis=2,X=90):
         '''Test GOTO. X in degrees'''
         logging.info(f'AXIS{axis}: GOTO test')
         self.stop_motion(axis)
-        self.set_motion_mode(axis,False,False,False)
+        self.set_motion_mode(axis,False,X,False)
         self.set_goto_target(axis,X)
         self.start_motion(axis)
         self.update_current_values(AXIS)
         while not self.values[axis]['Status']['Stopped']:
             time.sleep(2)
             self.update_current_values(AXIS)
-            print(self.values[axis])
 
     def test_slew(self,axis=1,speed=1):
         '''Test SLEW'''
         logging.info(f'AXIS{axis}: SLEW test')
         self.stop_motion(axis)
-        self.update_current_values(AXIS)
+        self.set_motion_mode(axis,True,(speed>=0),True)
         self.set_speed(axis,speed)
-        self.set_motion_mode(axis,True,True,True)
-        self.update_current_values(AXIS)
         self.start_motion(axis)
-        self.update_current_values(AXIS)
+
 
 
 
 if __name__ == '__main__':
     smc=synscanMotors()
-
+    smc.set_pos(0,0)
     #AXIS to test
     AXIS=2
     
     #Test GOTO
-    if True:
+    if False:
         smc.test_goto(axis=AXIS,X=45)
         smc.test_goto(axis=AXIS,X=0)
         exit(0)
@@ -347,8 +404,32 @@ if __name__ == '__main__':
     #Test SLEW
     if False:
         smc.test_slew(axis=AXIS,speed=.5)
-        while True:
-                time.sleep(2)
-                smc.update_current_values(AXIS)
+        smc.wait2stop(AXIS)
         exit(0)
+
+    #Two axes goto
+    if True:
+        smc.goto(5,15)
+        smc.goto(0,0)
+        exit(0)
+
+    #Ramp tracking
+    if False:
+        for speed in range(0,50,1):
+            time.sleep(.1)
+            smc.track_axis(AXIS,speed/10)
+        for speed in range(50,0,-1):
+            time.sleep(.1)
+            smc.track_axis(AXIS,speed/10)
+        for speed in range(0,50,1):
+            time.sleep(.1)
+            smc.track_axis(AXIS,-speed/10)
+        for speed in range(50,0,-1):
+            time.sleep(.1)
+            smc.track_axis(AXIS,-speed/10)
+
+    #GOTO/TRACK interrupts
+    if True:
+        pass
+
 
