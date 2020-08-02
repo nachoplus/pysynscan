@@ -6,7 +6,7 @@
 
 import os
 import logging
-import synscanComm
+import synscan.synscanComm as synscanComm
 import time
 
 UDP_IP = os.getenv("SYNSCAN_UDP_IP","192.168.4.1")
@@ -45,13 +45,13 @@ class synscanMotors(synscanComm.synscanComm):
 
         Generally, the motor controller returns to "Speed Mode" when the motor stops automatically. 
     '''
-    def __init__(self):
+    def __init__(self,udp_ip=UDP_IP,udp_port=UDP_PORT):
         '''Init UDP comunication '''      
         logging.basicConfig(
             format='%(asctime)s %(levelname)s:synscanMotor: %(message)s',
             level=LOGGING_LEVEL
             )
-        super(synscanMotors, self).__init__(udp_ip=UDP_IP,udp_port=UDP_PORT)
+        super(synscanMotors, self).__init__(udp_ip,udp_port)
         self.init()
         self.update_current_values()
 
@@ -247,7 +247,7 @@ class synscanMotors(synscanComm.synscanComm):
         logging.info(f'AXIS{axis}: Waitting to stop.')
         self.update_current_values()
         while not self.values[axis]['Status']['Stopped']:
-            time.sleep(2)
+            time.sleep(1)
             self.update_current_values()
         logging.info(f'AXIS{axis}: Stopped')
 
@@ -373,10 +373,7 @@ class synscanMotors(synscanComm.synscanComm):
         self.set_motion_mode(axis,False,X,False)
         self.set_goto_target(axis,X)
         self.start_motion(axis)
-        self.update_current_values(AXIS)
-        while not self.values[axis]['Status']['Stopped']:
-            time.sleep(2)
-            self.update_current_values(AXIS)
+        self.wait2stop(axis)
 
     def test_slew(self,axis=1,speed=1):
         '''Test SLEW'''
@@ -396,7 +393,7 @@ if __name__ == '__main__':
     AXIS=2
     
     #Test GOTO
-    if False:
+    if True:
         smc.test_goto(axis=AXIS,X=45)
         smc.test_goto(axis=AXIS,X=0)
         exit(0)
@@ -427,7 +424,7 @@ if __name__ == '__main__':
         for speed in range(50,0,-1):
             time.sleep(.1)
             smc.track_axis(AXIS,-speed/10)
-
+        exit(0)
     #GOTO/TRACK interrupts
     if True:
         pass

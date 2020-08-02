@@ -8,6 +8,9 @@ import socket
 import logging
 import os
 import select
+import threading
+
+
 
 UDP_IP = os.getenv("SYNSCAN_UDP_IP","192.168.4.1")
 UDP_PORT = os.getenv("SYNSCAN_UDP_PORT",11880)
@@ -28,6 +31,7 @@ class synscanComm:
             )
         logging.info(f"UDP target IP: {udp_ip}")
         logging.info(f"UDP target port: {udp_port}")
+        self.lock = threading.Lock()
         self.sock = socket.socket(socket.AF_INET, # Internet
         socket.SOCK_DGRAM) # UDP
         self.sock.setblocking(0)
@@ -37,18 +41,19 @@ class synscanComm:
 
     
     def send_raw_cmd(self,cmd,timeout_in_seconds=2):
-        '''Low level send command function '''    
-        self.sock.sendto(cmd,(self.udp_ip,self.udp_port))
-        ready = select.select([self.sock], [], [], timeout_in_seconds)
-        if ready[0]:
-            self.commOK=True
-            response,(fromhost,fromport) = self.sock.recvfrom(1024)
-            logging.debug(f"response: {response} host:{fromhost} port:{fromport}" )
-        else:
-            self.commOK=False
-            logging.debug(f"Socket timeout. {timeout_in_seconds}s without response" )
-            raise(NameError('SynscanSocketTimeoutError'))
-            response = False
+        '''Low level send command function ''' 
+        with self.lock:   
+            self.sock.sendto(cmd,(self.udp_ip,self.udp_port))
+            ready = select.select([self.sock], [], [], timeout_in_seconds)
+            if ready[0]:
+                self.commOK=True
+                response,(fromhost,fromport) = self.sock.recvfrom(1024)
+                logging.debug(f"response: {response} host:{fromhost} port:{fromport}" )
+            else:
+                self.commOK=False
+                logging.debug(f"Socket timeout. {timeout_in_seconds}s without response" )
+                raise(NameError('SynscanSocketTimeoutError'))
+                response = False        
         return response
 
     def send_cmd(self,cmd,axis,data=None,ndigits=6):
