@@ -6,6 +6,8 @@
 Welcome to pysynscan's documentation!
 =====================================
 
+.. include:: ../README.rst
+
 
 Command line utilities
 ======================
