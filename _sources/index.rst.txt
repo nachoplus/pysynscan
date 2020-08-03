@@ -6,30 +6,36 @@
 Welcome to pysynscan's documentation!
 =====================================
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
 
-.. toctree::
-   :maxdepth: 2
+Command line utilities
+======================
+.. click:: scripts.cli:goto
+   :prog: synscanGoto
+   :nested: full
 
-   source/api
+.. click:: scripts.cli:track
+   :prog: synscanTrack
+   :nested: full
 
-synscanMotors
+.. click:: scripts.cli:stop
+   :prog: synscanStop
+   :nested: full
+
+.. click:: scripts.cli:show
+   :prog: synscanShow
+   :nested: full
+
+.. click:: scripts.cli:syncronize
+   :prog: synscanSync
+   :nested: full
+
+API Reference
 =============
-.. automodule:: synscan.synscanMotors
-   :members:
-   :inherited-members:
+.. toctree::
+   :maxdepth: 2
 
+   api
 
-synscanComm
-===========
-.. automodule:: synscan.synscanComm
-   :members:
-   :inherited-members:
-
-synscan main
-===================
 
 Indices and tables
 ==================

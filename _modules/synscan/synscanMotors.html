@@ -58,23 +58,24 @@
 <span class="n">UDP_IP</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;SYNSCAN_UDP_IP&quot;</span><span class="p">,</span><span class="s2">&quot;192.168.4.1&quot;</span><span class="p">)</span>
 <span class="n">UDP_PORT</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;SYNSCAN_UDP_PORT&quot;</span><span class="p">,</span><span class="mi">11880</span><span class="p">)</span>
 
-<span class="n">LOGGING_LEVEL</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;SYNSCAN_LOGGING_LEVEL&quot;</span><span class="p">,</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+<span class="n">LOGGING_LEVEL</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;SYNSCAN_LOGGING_LEVEL&quot;</span><span class="p">,</span><span class="n">logging</span><span class="o">.</span><span class="n">WARNING</span><span class="p">)</span>
 
-<div class="viewcode-block" id="synscanMotors"><a class="viewcode-back" href="../../index.html#synscan.synscanMotors.synscanMotors">[docs]</a><span class="k">class</span> <span class="nc">synscanMotors</span><span class="p">(</span><span class="n">synscanComm</span><span class="o">.</span><span class="n">synscanComm</span><span class="p">):</span>
+<div class="viewcode-block" id="synscanMotors"><a class="viewcode-back" href="../../api.html#synscan.synscanMotors.synscanMotors">[docs]</a><span class="k">class</span> <span class="nc">synscanMotors</span><span class="p">(</span><span class="n">synscanComm</span><span class="o">.</span><span class="n">synscanComm</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Implementation of all motor commands and logic</span>
 <span class="sd">    following the document:</span>
 <span class="sd">    https://inter-static.skywatcher.com/downloads/skywatcher_motor_controller_command_set.pdf</span>
 
-<span class="sd">    IMPORTANT NOTES(based on the above doc):</span>
+<span class="sd">    **IMPORTANT NOTES** (based on the above doc):</span>
 
-<span class="sd">    In the motor controller, there is a hardware timer T1 that is used to generate stepping pulse</span>
-<span class="sd">    for stepper motor or reference position for servomotor. The input clockâs frequency of the timer,</span>
-<span class="sd">    plus the preset value of this timer, determine the slewing speed of the motors. </span>
+<span class="sd">    * In the motor controller, there is a hardware timer T1 that is used to generate stepping pulse</span>
+<span class="sd">      for stepper motor or reference position for servomotor. The input clocks frequency of the timer,</span>
+<span class="sd">      plus the preset value of this timer, determine the slewing speed of the motors. </span>
 
-<span class="sd">    ** For GOTO mode, the motor controller will take care of T1 automatically. But motion mode has to be set to tracking=False**</span>
+<span class="sd">    * For GOTO mode, the motor controller will take care of T1 automatically. But motion mode has to be set to tracking=False</span>
 
 <span class="sd">    When T1 generates an interrupt, it might:</span>
+
 <span class="sd">        * Drive the motor to move 1 step (1 micro-step or 1 encoder tick) for low speed slewing.</span>
 <span class="sd">        * Drive the motor to move up to 32 steps for high speed slewing. This method applies to motor</span>
 <span class="sd">          controller firmware version 2.xx. For motor controller with firmware 3.xx or above, the motor</span>
@@ -82,6 +83,7 @@
 
 
 <span class="sd">    Typical session:</span>
+
 <span class="sd">        * Check whether the motor is in full stop status. If not, stop it. </span>
 <span class="sd">        * Set the motion mode. </span>
 <span class="sd">        * Set the parameters, for example, destination or preset value of T1. </span>
@@ -89,8 +91,12 @@
 <span class="sd">        * For a GOTO slewing, check the motor status to confirm that the motor stops (Generally means arriving the destination. ).</span>
 <span class="sd">          For a Speed mode slewing, send &quot;Stop&quot; command to end the session. </span>
 
-<span class="sd">        Generally, the motor controller returns to &quot;Speed Mode&quot; when the motor stops automatically. </span>
+<span class="sd">    Generally, the motor controller returns to &quot;Speed Mode&quot; when the motor stops automatically. </span>
+
+
 <span class="sd">    &#39;&#39;&#39;</span>
+
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">udp_ip</span><span class="o">=</span><span class="n">UDP_IP</span><span class="p">,</span><span class="n">udp_port</span><span class="o">=</span><span class="n">UDP_PORT</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Init UDP comunication &#39;&#39;&#39;</span>      
         <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
@@ -102,7 +108,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">update_current_values</span><span class="p">()</span>
 
 
-<div class="viewcode-block" id="synscanMotors.init"><a class="viewcode-back" href="../../index.html#synscan.synscanMotors.synscanMotors.init">[docs]</a>    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="synscanMotors.init"><a class="viewcode-back" href="../../api.html#synscan.synscanMotors.synscanMotors.init">[docs]</a>    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Get main motor parameters. Retry if comm fails&#39;&#39;&#39;</span>
         <span class="n">retrySec</span><span class="o">=</span><span class="mi">2</span>
         <span class="k">try</span><span class="p">:</span>
@@ -113,13 +119,13 @@
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">retrySec</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">init</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="synscanMotors.degrees2counts"><a class="viewcode-back" href="../../index.html#synscan.synscanMotors.synscanMotors.degrees2counts">[docs]</a>    <span class="k">def</span> <span class="nf">degrees2counts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">axis</span><span class="p">,</span><span class="n">degrees</span><span class="p">):</span>
+<div class="viewcode-block" id="synscanMotors.degrees2counts"><a class="viewcode-back" href="../../api.html#synscan.synscanMotors.synscanMotors.degrees2counts">[docs]</a>    <span class="k">def</span> <span class="nf">degrees2counts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">axis</span><span class="p">,</span><span class="n">degrees</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Return position or speed in counts for a given deg or deg/seconds value&#39;&#39;&#39;</span>
         <span class="n">CPR</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">axis</span><span class="p">][</span><span class="s1">&#39;countsPerRevolution&#39;</span><span class="p">]</span>
         <span class="n">value</span><span class="o">=</span><span class="n">degrees</span><span class="o">*</span><span class="n">CPR</span><span class="o">/</span><span class="mi">360</span>
         <span class="k">return</span> <span class="n">value</span></div>
 
-<div class="viewcode-block" id="synscanMotors.counts2degrees"><a class="viewcode-back" href="../../index.html#synscan.synscanMotors.synscanMotors.counts2degrees">[docs]</a>    <span class="k">def</span> <span class="nf">counts2degrees</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">axis</span><span class="p">,</span><span class="n">counts</span><span class="p">):</span>
+<div class="viewcode-block" id="synscanMotors.counts2degrees"><a class="viewcode-back" href="../../api.html#synscan.synscanMotors.synscanMotors.counts2degrees">[docs]</a>    <span class="k">def</span> <span class="nf">counts2degrees</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">axis</span><span class="p">,</span><span class="n">counts</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Return position or speed in degrees for a given counts or counts/seconds value&#39;&#39;&#39;</span>
         <span class="n">CPR</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">axis</span><span class="p">][</span><span class="s1">&#39;countsPerRevolution&#39;</span><span class="p">]</span>
         <span class="n">value</span><span class="o">=</span><span class="n">counts</span><span class="o">*</span><span class="mi">360</span><span class="o">/</span><span class="n">CPR</span>
@@ -135,11 +141,13 @@
         <span class="k">return</span> <span class="n">T1preset</span>
 
 
-<div class="viewcode-block" id="synscanMotors.get_values"><a class="viewcode-back" href="../../index.html#synscan.synscanMotors.synscanMotors.get_values">[docs]</a>    <span class="k">def</span> <span class="nf">get_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">parameterDict</span><span class="p">):</span>
+<div class="viewcode-block" id="synscanMotors.get_values"><a class="viewcode-back" href="../../api.html#synscan.synscanMotors.synscanMotors.get_values">[docs]</a>    <span class="k">def</span> <span class="nf">get_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">parameterDict</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Send all cmd in the parameterDict for both axis and return</span>
 <span class="sd">        a dictionary with the values.</span>
+
 <span class="sd">        Used by get_parameters and update_current_values functions</span>
+
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">params</span><span class="o">=</span><span class="nb">dict</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">axis</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">):</span>
@@ -152,11 +160,20 @@
                     <span class="k">raise</span><span class="p">(</span><span class="ne">NameError</span><span class="p">(</span><span class="s1">&#39;getValuesError&#39;</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">params</span></div>
 
-<div class="viewcode-block" id="synscanMotors.get_parameters"><a class="viewcode-back" href="../../index.html#synscan.synscanMotors.synscanMotors.get_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">get_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="synscanMotors.get_parameters"><a class="viewcode-back" href="../../api.html#synscan.synscanMotors.synscanMotors.get_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">get_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Get main motor parameters.</span>
 <span class="sd">        Some of this parameters are needed for all calculations </span>
 <span class="sd">        so they have to be available to the rest of the code</span>
+
+<span class="sd">        Parameters are stored in a dict with te following keys:</span>
+
+<span class="sd">            * countsPerRevolution</span>
+<span class="sd">            * TimerInterruptFreq</span>
+<span class="sd">            * StepPeriod</span>
+<span class="sd">            * MotorBoardVersion</span>
+<span class="sd">            * HighSpeedRatio</span>
+
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">parameterDict</span><span class="o">=</span><span class="p">{</span> <span class="s1">&#39;countsPerRevolution&#39;</span><span class="p">:</span><span class="s1">&#39;a&#39;</span><span class="p">,</span>
                         <span class="s1">&#39;TimerInterruptFreq&#39;</span><span class="p">:</span><span class="s1">&#39;b&#39;</span><span class="p">,</span>
@@ -173,7 +190,7 @@
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;MOUNT PARAMETERS: </span><span class="si">{</span><span class="n">params</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">params</span></div>
 
-<div class="viewcode-block" id="synscanMotors.update_current_values"><a class="viewcode-back" href="../../index.html#synscan.synscanMotors.synscanMotors.update_current_values">[docs]</a>    <span class="k">def</span> <span class="nf">update_current_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">logaxis</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+<div class="viewcode-block" id="synscanMotors.update_current_values"><a class="viewcode-back" href="../../api.html#synscan.synscanMotors.synscanMotors.update_current_values">[docs]</a>    <span class="k">def</span> <span class="nf">update_current_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">logaxis</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Get current status and values&#39;&#39;&#39;</span>
         <span class="n">parameterDict</span><span class="o">=</span><span class="p">{</span> <span class="s1">&#39;GotoTarget&#39;</span><span class="p">:</span><span class="s1">&#39;h&#39;</span><span class="p">,</span>
                         <span class="s1">&#39;Position&#39;</span><span class="p">:</span><span class="s1">&#39;j&#39;</span><span class="p">,</span>
@@ -193,27 +210,40 @@
             <span class="n">params</span><span class="p">[</span><span class="n">axis</span><span class="p">][</span><span class="s1">&#39;Status&#39;</span><span class="p">]</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">decode_status</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="n">axis</span><span class="p">][</span><span class="s1">&#39;Status&#39;</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="o">=</span><span class="n">params</span>
         <span class="k">if</span> <span class="n">logaxis</span><span class="o">==</span><span class="mi">3</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Actual values </span><span class="si">{</span><span class="n">params</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">params</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">logaxis</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;AXIS</span><span class="si">{</span><span class="n">logaxis</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">params</span><span class="p">[</span><span class="n">logaxis</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">params</span></div>
 
-<div class="viewcode-block" id="synscanMotors.decode_status"><a class="viewcode-back" href="../../index.html#synscan.synscanMotors.synscanMotors.decode_status">[docs]</a>    <span class="k">def</span> <span class="nf">decode_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">hexstring</span><span class="p">):</span>
+<div class="viewcode-block" id="synscanMotors.decode_status"><a class="viewcode-back" href="../../api.html#synscan.synscanMotors.synscanMotors.decode_status">[docs]</a>    <span class="k">def</span> <span class="nf">decode_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">hexstring</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39; Decode Status msg.</span>
 <span class="sd">        Status msg is 12bits long (3 HEX digits). </span>
 <span class="sd">        </span>
 <span class="sd">        HEX digit1 bits:</span>
-<span class="sd">        B0: 1=Tracking,0=Goto</span>
-<span class="sd">        B1: 1=CCW,0=CW</span>
-<span class="sd">        B2: 1=Fast,0=Slow</span>
+
+<span class="sd">        * B0: 1=Tracking,0=Goto</span>
+<span class="sd">        * B1: 1=CCW,0=CW</span>
+<span class="sd">        * B2: 1=Fast,0=Slow</span>
 
 <span class="sd">        HEX digit2 bits:</span>
-<span class="sd">        B0: 1=Running,0=Stopped</span>
-<span class="sd">        B1: 1=Blocked,0=Normal</span>
+
+<span class="sd">        * B0: 1=Running,0=Stopped</span>
+<span class="sd">        * B1: 1=Blocked,0=Normal</span>
 
 <span class="sd">        HEX digit3 bits:</span>
-<span class="sd">        B0: 0 = Not Init,1 = Init done</span>
-<span class="sd">        B1: 1 = Level switch on</span>
+
+<span class="sd">        * B0: 0 = Not Init,1 = Init done</span>
+<span class="sd">        * B1: 1 = Level switch on</span>
+
+<span class="sd">        The decode value is returned as a dictionary with the following keys:</span>
+
+<span class="sd">        * Tracking</span>
+<span class="sd">        * CCW</span>
+<span class="sd">        * FastSpeed</span>
+<span class="sd">        * Stopped</span>
+<span class="sd">        * Blocked</span>
+<span class="sd">        * InitDone</span>
+<span class="sd">        * LevelSwitchOn</span>
 
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">A</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">hexstring</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="mi">16</span><span class="p">)</span>       
@@ -231,24 +261,27 @@
         <span class="k">return</span> <span class="n">status</span></div>
 
 
-<div class="viewcode-block" id="synscanMotors.set_motion_mode"><a class="viewcode-back" href="../../index.html#synscan.synscanMotors.synscanMotors.set_motion_mode">[docs]</a>    <span class="k">def</span> <span class="nf">set_motion_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">axis</span><span class="p">,</span><span class="n">Tracking</span><span class="p">,</span><span class="n">CW</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">fastSpeed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="synscanMotors.set_motion_mode"><a class="viewcode-back" href="../../api.html#synscan.synscanMotors.synscanMotors.set_motion_mode">[docs]</a>    <span class="k">def</span> <span class="nf">set_motion_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">axis</span><span class="p">,</span><span class="n">Tracking</span><span class="p">,</span><span class="n">CW</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">fastSpeed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Set Motion Mode.</span>
 
-<span class="sd">        Channel will always be set to Tracking Mode after stopped</span>
+<span class="sd">        NOTE: Channel will always be set to Tracking Mode after stopped</span>
 
-<span class="sd">        1byte msg (2 HEX digits)</span>
+<span class="sd">        Motion mode msg is 1byte msg (2 HEX digits)</span>
 
 <span class="sd">        HEX Digit 1 bits:</span>
-<span class="sd">        B0: 0=Goto, 1=Tracking</span>
-<span class="sd">        B1: 0=Slow, 1=Fast  (T)</span>
-<span class="sd">            0=Fast, 1=Slow  (G)</span>
-<span class="sd">        B2: 0=S/F, 1=Medium</span>
-<span class="sd">        B3: 1x SlowGoto</span>
+
+<span class="sd">           * B0: 0=Goto, 1=Tracking</span>
+<span class="sd">           * B1: 0=Slow, 1=Fast  (T)</span>
+<span class="sd">                 0=Fast, 1=Slow  (G)</span>
+<span class="sd">           * B2: 0=S/F, 1=Medium</span>
+<span class="sd">           * B3: 1x SlowGoto</span>
 
 <span class="sd">        HEX Digit 2 bits:  </span>
-<span class="sd">        B0: 0=CW,1=CCW</span>
-<span class="sd">        B1: 0=Noth,1=South</span>
-<span class="sd">        B2: 0=Normal Goto,1=Coarse Goto</span>
+
+<span class="sd">           * B0: 0=CW,1=CCW</span>
+<span class="sd">           * B1: 0=Noth,1=South</span>
+<span class="sd">           * B2: 0=Normal Goto,1=Coarse Goto</span>
+
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">Tracking</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">fastSpeed</span><span class="p">:</span>
@@ -270,19 +303,19 @@
         <span class="n">response</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">send_cmd</span><span class="p">(</span><span class="s1">&#39;G&#39;</span><span class="p">,</span><span class="n">axis</span><span class="p">,</span><span class="n">value</span><span class="p">,</span><span class="n">ndigits</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> 
         <span class="k">return</span> <span class="n">response</span>        </div>
 
-<div class="viewcode-block" id="synscanMotors.set_T1_preset"><a class="viewcode-back" href="../../index.html#synscan.synscanMotors.synscanMotors.set_T1_preset">[docs]</a>    <span class="k">def</span> <span class="nf">set_T1_preset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">axis</span><span class="p">,</span><span class="n">value</span><span class="p">):</span>
+<div class="viewcode-block" id="synscanMotors.set_T1_preset"><a class="viewcode-back" href="../../api.html#synscan.synscanMotors.synscanMotors.set_T1_preset">[docs]</a>    <span class="k">def</span> <span class="nf">set_T1_preset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">axis</span><span class="p">,</span><span class="n">value</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Set step period for tracking speed&#39;&#39;&#39;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;AXIS</span><span class="si">{</span><span class="n">axis</span><span class="si">}</span><span class="s1">: Setting step_period to: </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s1"> counts per seconds&#39;</span><span class="p">)</span>
         <span class="n">response</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">send_cmd</span><span class="p">(</span><span class="s1">&#39;I&#39;</span><span class="p">,</span><span class="n">axis</span><span class="p">,</span><span class="n">value</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">response</span></div>
 
-<div class="viewcode-block" id="synscanMotors.get_axis_posCounts"><a class="viewcode-back" href="../../index.html#synscan.synscanMotors.synscanMotors.get_axis_posCounts">[docs]</a>    <span class="k">def</span> <span class="nf">get_axis_posCounts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">axis</span><span class="p">):</span>
+<div class="viewcode-block" id="synscanMotors.get_axis_posCounts"><a class="viewcode-back" href="../../api.html#synscan.synscanMotors.synscanMotors.get_axis_posCounts">[docs]</a>    <span class="k">def</span> <span class="nf">get_axis_posCounts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">axis</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Get actual postion in StepsCounts.&#39;&#39;&#39;</span>
         <span class="c1">#Position values are offseting by 0x800000</span>
         <span class="n">response</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">send_cmd</span><span class="p">(</span><span class="s1">&#39;j&#39;</span><span class="p">,</span><span class="n">axis</span><span class="p">)</span><span class="o">-</span><span class="mh">0x800000</span>
         <span class="k">return</span> <span class="n">response</span></div>
 
-<div class="viewcode-block" id="synscanMotors.set_goto_targetCounts"><a class="viewcode-back" href="../../index.html#synscan.synscanMotors.synscanMotors.set_goto_targetCounts">[docs]</a>    <span class="k">def</span> <span class="nf">set_goto_targetCounts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">axis</span><span class="p">,</span><span class="n">targetCounts</span><span class="p">):</span>
+<div class="viewcode-block" id="synscanMotors.set_goto_targetCounts"><a class="viewcode-back" href="../../api.html#synscan.synscanMotors.synscanMotors.set_goto_targetCounts">[docs]</a>    <span class="k">def</span> <span class="nf">set_goto_targetCounts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">axis</span><span class="p">,</span><span class="n">targetCounts</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;GoTo Target value in StepsCounts. Motors has to be stopped&#39;&#39;&#39;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;AXIS</span><span class="si">{</span><span class="n">axis</span><span class="si">}</span><span class="s1">: Setting goto target to </span><span class="si">{</span><span class="n">targetCounts</span><span class="si">}</span><span class="s1"> counts&#39;</span><span class="p">)</span>
         <span class="c1">#Position values are offseting by 0x800000</span>
@@ -297,7 +330,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">update_current_values</span><span class="p">()</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;AXIS</span><span class="si">{</span><span class="n">axis</span><span class="si">}</span><span class="s1">: Stopped&#39;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="synscanMotors.set_posCounts"><a class="viewcode-back" href="../../index.html#synscan.synscanMotors.synscanMotors.set_posCounts">[docs]</a>    <span class="k">def</span> <span class="nf">set_posCounts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">axis</span><span class="p">,</span><span class="n">counts</span><span class="p">):</span>
+<div class="viewcode-block" id="synscanMotors.set_posCounts"><a class="viewcode-back" href="../../api.html#synscan.synscanMotors.synscanMotors.set_posCounts">[docs]</a>    <span class="k">def</span> <span class="nf">set_posCounts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">axis</span><span class="p">,</span><span class="n">counts</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Syncronize position Counts.&#39;&#39;&#39;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;AXIS</span><span class="si">{</span><span class="n">axis</span><span class="si">}</span><span class="s1">: Syncronizing actual position to </span><span class="si">{</span><span class="n">counts</span><span class="si">}</span><span class="s1"> counts&#39;</span><span class="p">)</span>
         <span class="c1">#Position values are offseting by 0x800000</span>
@@ -306,7 +339,7 @@
 
 
     <span class="c1">#HIGH LEVEL API (arguments in degrees)</span>
-<div class="viewcode-block" id="synscanMotors.set_switch"><a class="viewcode-back" href="../../index.html#synscan.synscanMotors.synscanMotors.set_switch">[docs]</a>    <span class="k">def</span> <span class="nf">set_switch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">on</span><span class="p">):</span>
+<div class="viewcode-block" id="synscanMotors.set_switch"><a class="viewcode-back" href="../../api.html#synscan.synscanMotors.synscanMotors.set_switch">[docs]</a>    <span class="k">def</span> <span class="nf">set_switch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">on</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Switch on/off auxiliary switch&#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="n">on</span><span class="p">:</span>
             <span class="n">value</span><span class="o">=</span><span class="mi">1</span>
@@ -316,12 +349,12 @@
         <span class="n">response</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">send_cmd</span><span class="p">(</span><span class="s1">&#39;O&#39;</span><span class="p">,</span><span class="n">value</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">response</span></div>
 
-<div class="viewcode-block" id="synscanMotors.get_axis_pos"><a class="viewcode-back" href="../../index.html#synscan.synscanMotors.synscanMotors.get_axis_pos">[docs]</a>    <span class="k">def</span> <span class="nf">get_axis_pos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">axis</span><span class="p">):</span>
+<div class="viewcode-block" id="synscanMotors.get_axis_pos"><a class="viewcode-back" href="../../api.html#synscan.synscanMotors.synscanMotors.get_axis_pos">[docs]</a>    <span class="k">def</span> <span class="nf">get_axis_pos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">axis</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Get actual position in Degrees.&#39;&#39;&#39;</span>
         <span class="n">counts</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_axis_posCounts</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">counts2degrees</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="synscanMotors.set_axis_pos"><a class="viewcode-back" href="../../index.html#synscan.synscanMotors.synscanMotors.set_axis_pos">[docs]</a>    <span class="k">def</span> <span class="nf">set_axis_pos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">axis</span><span class="p">,</span><span class="n">degrees</span><span class="p">):</span>
+<div class="viewcode-block" id="synscanMotors.set_axis_pos"><a class="viewcode-back" href="../../api.html#synscan.synscanMotors.synscanMotors.set_axis_pos">[docs]</a>    <span class="k">def</span> <span class="nf">set_axis_pos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">axis</span><span class="p">,</span><span class="n">degrees</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Syncronize position Degrees.&#39;&#39;&#39;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;AXIS</span><span class="si">{</span><span class="n">axis</span><span class="si">}</span><span class="s1">: Syncronizing actual position to </span><span class="si">{</span><span class="n">degrees</span><span class="si">}</span><span class="s1"> degrees&#39;</span><span class="p">)</span>
         <span class="n">counts</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">degrees2counts</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span><span class="n">degrees</span><span class="p">)</span>
@@ -329,9 +362,9 @@
 
     <span class="k">def</span> <span class="nf">set_pos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">alpha</span><span class="p">,</span><span class="n">beta</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_axis_pos</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">alpha</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set_axis_pos</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">beta</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_axis_pos</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">beta</span><span class="p">)</span>
 
-<div class="viewcode-block" id="synscanMotors.set_goto_target"><a class="viewcode-back" href="../../index.html#synscan.synscanMotors.synscanMotors.set_goto_target">[docs]</a>    <span class="k">def</span> <span class="nf">set_goto_target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">axis</span><span class="p">,</span><span class="n">targetDegrees</span><span class="p">):</span>
+<div class="viewcode-block" id="synscanMotors.set_goto_target"><a class="viewcode-back" href="../../api.html#synscan.synscanMotors.synscanMotors.set_goto_target">[docs]</a>    <span class="k">def</span> <span class="nf">set_goto_target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">axis</span><span class="p">,</span><span class="n">targetDegrees</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;GoTo Target value in Degrees. Motors has to be stopped&#39;&#39;&#39;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;AXIS</span><span class="si">{</span><span class="n">axis</span><span class="si">}</span><span class="s1">: Setting goto target to </span><span class="si">{</span><span class="n">targetDegrees</span><span class="si">}</span><span class="s1"> degrees&#39;</span><span class="p">)</span>
         <span class="n">posCounts</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">degrees2counts</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span><span class="n">targetDegrees</span><span class="p">)</span>
@@ -344,7 +377,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">set_goto_target</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span><span class="n">targetDegrees</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">start_motion</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
 
-<div class="viewcode-block" id="synscanMotors.set_speed"><a class="viewcode-back" href="../../index.html#synscan.synscanMotors.synscanMotors.set_speed">[docs]</a>    <span class="k">def</span> <span class="nf">set_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">axis</span><span class="p">,</span><span class="n">degreesPerSecond</span><span class="p">):</span>
+<div class="viewcode-block" id="synscanMotors.set_speed"><a class="viewcode-back" href="../../api.html#synscan.synscanMotors.synscanMotors.set_speed">[docs]</a>    <span class="k">def</span> <span class="nf">set_speed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">axis</span><span class="p">,</span><span class="n">degreesPerSecond</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Set the tracking speed in degreesPerSecond&#39;&#39;&#39;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;AXIS</span><span class="si">{</span><span class="n">axis</span><span class="si">}</span><span class="s1">: Setting speed to:</span><span class="si">{</span><span class="n">degreesPerSecond</span><span class="si">}</span><span class="s1"> degrees per second&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">degreesPerSecond</span><span class="o">!=</span><span class="mi">0</span><span class="p">:</span>
@@ -375,13 +408,13 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">start_motion</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
             <span class="k">return</span>
 
-<div class="viewcode-block" id="synscanMotors.start_motion"><a class="viewcode-back" href="../../index.html#synscan.synscanMotors.synscanMotors.start_motion">[docs]</a>    <span class="k">def</span> <span class="nf">start_motion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">axis</span><span class="p">):</span>
+<div class="viewcode-block" id="synscanMotors.start_motion"><a class="viewcode-back" href="../../api.html#synscan.synscanMotors.synscanMotors.start_motion">[docs]</a>    <span class="k">def</span> <span class="nf">start_motion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">axis</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Start Goto&#39;&#39;&#39;</span>
         <span class="n">response</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">send_cmd</span><span class="p">(</span><span class="s1">&#39;J&#39;</span><span class="p">,</span><span class="n">axis</span><span class="p">)</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;AXIS</span><span class="si">{</span><span class="n">axis</span><span class="si">}</span><span class="s1">: Starting motion&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">response</span></div>
 
-<div class="viewcode-block" id="synscanMotors.stop_motion"><a class="viewcode-back" href="../../index.html#synscan.synscanMotors.synscanMotors.stop_motion">[docs]</a>    <span class="k">def</span> <span class="nf">stop_motion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">axis</span><span class="p">,</span><span class="n">syncronous</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="synscanMotors.stop_motion"><a class="viewcode-back" href="../../api.html#synscan.synscanMotors.synscanMotors.stop_motion">[docs]</a>    <span class="k">def</span> <span class="nf">stop_motion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">axis</span><span class="p">,</span><span class="n">syncronous</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Soft stop. If syncronous==True wait to finish&#39;&#39;&#39;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;AXIS</span><span class="si">{</span><span class="n">axis</span><span class="si">}</span><span class="s1">: Stopping&#39;</span><span class="p">)</span>
         <span class="n">response</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">send_cmd</span><span class="p">(</span><span class="s1">&#39;K&#39;</span><span class="p">,</span><span class="n">axis</span><span class="p">)</span>
@@ -391,7 +424,7 @@
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;AXIS</span><span class="si">{</span><span class="n">axis</span><span class="si">}</span><span class="s1">: Ask to stop. In progress&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">response</span></div>
 
-<div class="viewcode-block" id="synscanMotors.goto"><a class="viewcode-back" href="../../index.html#synscan.synscanMotors.synscanMotors.goto">[docs]</a>    <span class="k">def</span> <span class="nf">goto</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">alpha</span><span class="p">,</span><span class="n">beta</span><span class="p">,</span><span class="n">syncronous</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="synscanMotors.goto"><a class="viewcode-back" href="../../api.html#synscan.synscanMotors.synscanMotors.goto">[docs]</a>    <span class="k">def</span> <span class="nf">goto</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">alpha</span><span class="p">,</span><span class="n">beta</span><span class="p">,</span><span class="n">syncronous</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;GOTO. alpha,beta in degrees&#39;&#39;&#39;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;GOTO axis1=</span><span class="si">{</span><span class="n">alpha</span><span class="si">}</span><span class="s1"> axis2=</span><span class="si">{</span><span class="n">beta</span><span class="si">}</span><span class="s1"> degrees&#39;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">axis</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]:</span>
@@ -406,13 +439,13 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">wait2stop</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="synscanMotors.track"><a class="viewcode-back" href="../../index.html#synscan.synscanMotors.synscanMotors.track">[docs]</a>    <span class="k">def</span> <span class="nf">track</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">alpha</span><span class="p">,</span><span class="n">beta</span><span class="p">):</span>
+<div class="viewcode-block" id="synscanMotors.track"><a class="viewcode-back" href="../../api.html#synscan.synscanMotors.synscanMotors.track">[docs]</a>    <span class="k">def</span> <span class="nf">track</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">alpha</span><span class="p">,</span><span class="n">beta</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;GOTO. alpha,beta in degrees per second&#39;&#39;&#39;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;TRACK speeds axis1=</span><span class="si">{</span><span class="n">alpha</span><span class="si">}</span><span class="s1"> axis2=</span><span class="si">{</span><span class="n">beta</span><span class="si">}</span><span class="s1"> degrees per seconds&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">track_axis</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">alpha</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">track_axis</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">beta</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="synscanMotors.test_goto"><a class="viewcode-back" href="../../index.html#synscan.synscanMotors.synscanMotors.test_goto">[docs]</a>    <span class="k">def</span> <span class="nf">test_goto</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">X</span><span class="o">=</span><span class="mi">90</span><span class="p">):</span>
+<div class="viewcode-block" id="synscanMotors.test_goto"><a class="viewcode-back" href="../../api.html#synscan.synscanMotors.synscanMotors.test_goto">[docs]</a>    <span class="k">def</span> <span class="nf">test_goto</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">X</span><span class="o">=</span><span class="mi">90</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Test GOTO. X in degrees&#39;&#39;&#39;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;AXIS</span><span class="si">{</span><span class="n">axis</span><span class="si">}</span><span class="s1">: GOTO test&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stop_motion</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
@@ -421,7 +454,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">start_motion</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">wait2stop</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="synscanMotors.test_slew"><a class="viewcode-back" href="../../index.html#synscan.synscanMotors.synscanMotors.test_slew">[docs]</a>    <span class="k">def</span> <span class="nf">test_slew</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">speed</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="synscanMotors.test_slew"><a class="viewcode-back" href="../../api.html#synscan.synscanMotors.synscanMotors.test_slew">[docs]</a>    <span class="k">def</span> <span class="nf">test_slew</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">speed</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Test SLEW&#39;&#39;&#39;</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;AXIS</span><span class="si">{</span><span class="n">axis</span><span class="si">}</span><span class="s1">: SLEW test&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stop_motion</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
