@@ -7,8 +7,10 @@ synscanMotors
    :inherited-members:
 
 
+
 synscanComm
 -----------
 .. automodule:: synscan.synscanComm
    :members:
    :inherited-members:
+   :private-members:

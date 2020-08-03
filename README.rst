@@ -3,8 +3,8 @@ pysynscan
 
 A pure python3 implementation of skywatcher synscan motor protocol. Tested on SkyWatcher AZ-GTI mount and open-synscan project
 
-Instalation
------------
+Installation
+------------
 From sources::
 
     git clone https://github.com/nachoplus/pysynscan.git

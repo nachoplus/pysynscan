@@ -20,7 +20,7 @@ LOGGING_LEVEL=os.getenv("SYNSCAN_LOGGING_LEVEL",logging.INFO)
 class synscanComm:
     '''
     UDP Comunication module.
-    Virtual. Used as base class.
+    Virtual. Used as base class. All members are protected
     '''
     def __init__(self,udp_ip=UDP_IP,udp_port=UDP_PORT):
         ''' Init the UDP socket '''
@@ -31,23 +31,23 @@ class synscanComm:
             )
         logging.info(f"UDP target IP: {udp_ip}")
         logging.info(f"UDP target port: {udp_port}")
-        self.lock = threading.Lock()
-        self.sock = socket.socket(socket.AF_INET, # Internet
+        self._sock = socket.socket(socket.AF_INET, # Internet
         socket.SOCK_DGRAM) # UDP
-        self.sock.setblocking(0)
+        self._sock.setblocking(0)
         self.udp_ip=udp_ip
         self.udp_port=udp_port
         self.commOK=False
+        self.lock= threading.Lock()
 
     
-    def send_raw_cmd(self,cmd,timeout_in_seconds=2):
+    def _send_raw_cmd(self,cmd,timeout_in_seconds=2):
         '''Low level send command function ''' 
         with self.lock:   
-            self.sock.sendto(cmd,(self.udp_ip,self.udp_port))
-            ready = select.select([self.sock], [], [], timeout_in_seconds)
+            self._sock.sendto(cmd,(self.udp_ip,self.udp_port))
+            ready = select.select([self._sock], [], [], timeout_in_seconds)
             if ready[0]:
                 self.commOK=True
-                response,(fromhost,fromport) = self.sock.recvfrom(1024)
+                response,(fromhost,fromport) = self._sock.recvfrom(1024)
                 logging.debug(f"response: {response} host:{fromhost} port:{fromport}" )
             else:
                 self.commOK=False
@@ -56,24 +56,24 @@ class synscanComm:
                 response = False        
         return response
 
-    def send_cmd(self,cmd,axis,data=None,ndigits=6):
+    def _send_cmd(self,cmd,axis,data=None,ndigits=6):
         '''Command function '''
         if data is None:
            ndigits=0
-        msg=bytes(f':{cmd}{axis}{self.int2hex(data,ndigits)}\r','utf-8')
+        msg=bytes(f':{cmd}{axis}{self._int2hex(data,ndigits)}\r','utf-8')
         logging.debug(f'sending cmd:{msg}')
-        raw_response=self.send_raw_cmd(msg)
+        raw_response=self._send_raw_cmd(msg)
 
         #If everything is OK first char must be '=' (code 61)
         if raw_response[0]==61:
-            response=self.hex2int(raw_response[1:-1])
+            response=self._hex2int(raw_response[1:-1])
             return response
 
         #If something goes wrong first char must be '!' (code 33)
         if raw_response[0]==33:
             ErrorDict={0:'UnknownCommand',1:'CommandLengthError',2:'MotorNotStopped',3:'InvalidCharacter',
                        4:'NotInitialized',5:'DriverSleeping',7:'PECTrainingIsRunning',8:'NoValidPECdata'}
-            errorNumber=self.hex2int(raw_response[1:-1])
+            errorNumber=self._hex2int(raw_response[1:-1])
             if errorNumber not in [0,1,2,3,4,5,7,8]:
                 logging.warning(f'Unknown Error {raw_response}')
                 raise(NameError('CMDUnknowError'))
@@ -92,7 +92,7 @@ class synscanComm:
 
 
 
-    def int2hex(self,data,ndigits=6):
+    def _int2hex(self,data,ndigits=6):
         ''' Convert data prior to send to the motors following 
             Synscan Motor Protocol rules
    
@@ -121,7 +121,7 @@ class synscanComm:
         logging.debug(f'{data}(decimal) => {strData}(hex) => {strHEX}(synscan hex)')
         return strHEX
         
-    def hex2int(self,data):
+    def _hex2int(self,data):
         ''' Convert data recived from motors following 
             Synscan Motor Protocol rules
    
@@ -152,11 +152,11 @@ class synscanComm:
         logging.debug(f'{strData}(synscan hex) => {strHEX}(hex) => {v}(decimal)')
         return v
 
-    def test_comm(self):
+    def _test_comm(self):
         '''Control msg to check comms'''
         MESSAGE = b":F3\r"
         logging.info(f"Testing comms. Asking if initialized..")
-        response=self.send_raw_cmd(MESSAGE)
+        response=self._send_raw_cmd(MESSAGE)
         
         if response == b'=\r':
             logging.info(f"Mount initialized. Connection OK" )
@@ -165,8 +165,8 @@ class synscanComm:
 
 if __name__ == '__main__':
     smc=synscanComm()
-    smc.int2hex(smc.hex2int(b'1FCA89'))
-    smc.int2hex(smc.hex2int(b'5F3A'),4)
-    smc.int2hex(smc.hex2int(b'B8'),2)
+    smc._int2hex(smc._hex2int(b'1FCA89'))
+    smc._int2hex(smc._hex2int(b'5F3A'),4)
+    smc._int2hex(smc._hex2int(b'B8'),2)
 
 
