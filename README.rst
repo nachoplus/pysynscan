@@ -15,31 +15,8 @@ Use
 
 Several code examples are in examples directory
 
-Also some CLI (command lines interface) are provided:
+Also some CLI (command lines interface) are provided. 
 
-* synscanGoto::
+See full documentation on [https://nachoplus.github.io/pysynscan]
 
-    Usage: synscanGoto [OPTIONS]
 
-      Do a GOTO to a desired azimuth/altitude
-
-    Options:
-      --host TEXT       Synscan mount IP address
-      --port INTEGER    Synscan mount port
-      --azimuth FLOAT   Azimuth (degrees)
-      --altitude FLOAT  Altitude (degrees)
-      --sync BOOLEAN    Wait until finished
-      --help            Show this message and exit.
-
-* synscnaTrack::
-
-    Usage: synscanTrack [OPTIONS]
-
-      Move at desired speed (degrees per second)
-
-    Options:
-      --host TEXT       Synscan mount IP address
-      --port INTEGER    Synscan mount port
-      --azspeed FLOAT   Azimuth speed (degrees per second)
-      --altspeed FLOAT  Altitude speed (degrees per second)
-      --help            Show this message and exit.

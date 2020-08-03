@@ -35,4 +35,7 @@ setup(
       [console_scripts]
       synscanGoto=synscan.scripts.cli:goto
       synscanTrack=synscan.scripts.cli:track
+      synscanStop=synscan.scripts.cli:stop
+      synscanShow=synscan.scripts.cli:show
+      synscanSync=synscan.scripts.cli:syncronize
       """)

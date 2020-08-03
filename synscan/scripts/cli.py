@@ -7,30 +7,87 @@
 import click
 import os
 
+#GOTO
 @click.command()
 @click.option('--host', type=str, help='Synscan mount IP address', default='192.168.4.1')
 @click.option('--port', type=int, help='Synscan mount port', default=11880)
-@click.option('--azimuth', type=float, help='Azimuth (degrees)', default=0)
-@click.option('--altitude', type=float, help='Altitude (degrees)', default=0)
-@click.option('--sync', type=bool, help='Wait until finished', default=True)
-def goto(host, port,azimuth,altitude,sync):
-    """Do a GOTO to a desired azimuth/altitude"""
+@click.option('--wait', type=bool, help='Wait until finished (default False)', default=False)
+@click.argument('azimuth',type=float)
+@click.argument('altitude',type=float)
+def goto(host, port,azimuth,altitude,wait):
+    """Do a GOTO to a target azimuth/altitude"""
     import synscan.synscanMotors as synscanMotors
     UDP_IP = os.getenv("SYNSCAN_UDP_IP",host)
     UDP_PORT = os.getenv("SYNSCAN_UDP_PORT",port)
     smc=synscanMotors.synscanMotors(UDP_IP,UDP_PORT)
-    smc.goto(azimuth,altitude,syncronous=sync)
+    smc.goto(azimuth,altitude,syncronous=wait)
 
+
+#TRACK
 @click.command()
 @click.option('--host', type=str, help='Synscan mount IP address', default='192.168.4.1')
 @click.option('--port', type=int, help='Synscan mount port', default=11880)
-@click.option('--azspeed', type=float, help='Azimuth speed (degrees per second)', default=0)
-@click.option('--altspeed', type=float, help='Altitude speed (degrees per second)', default=0)
-def track(host, port, azspeed, altspeed):
+@click.argument('azimuth_speed',type=float)
+@click.argument('altitude_speed',type=float)
+def track(host, port, azimuth_speed, altitude_speed):
     """Move at desired speed (degrees per second)"""
     import synscan.synscanMotors as synscanMotors
     UDP_IP = os.getenv("SYNSCAN_UDP_IP",host)
     UDP_PORT = os.getenv("SYNSCAN_UDP_PORT",port)
     smc=synscanMotors.synscanMotors(UDP_IP,UDP_PORT)
-    smc.track(azspeed,altspeed)
+    smc.track(azimuth_speed,altitude_speed)
+
+#STOP
+@click.command()
+@click.option('--host', type=str, help='Synscan mount IP address', default='192.168.4.1')
+@click.option('--port', type=int, help='Synscan mount port', default=11880)
+@click.option('--wait', type=bool, help='Wait until finished', default=True)
+def stop(host, port,wait):
+    """Stop Motors"""
+    import synscan.synscanMotors as synscanMotors
+    UDP_IP = os.getenv("SYNSCAN_UDP_IP",host)
+    UDP_PORT = os.getenv("SYNSCAN_UDP_PORT",port)
+    smc=synscanMotors.synscanMotors(UDP_IP,UDP_PORT)
+    smc.stop_motion(1,syncronous=wait)
+    smc.stop_motion(2,syncronous=wait)
+
+
+#SHOW
+@click.command()
+@click.option('--host', type=str, help='Synscan mount IP address', default='192.168.4.1')
+@click.option('--port', type=int, help='Synscan mount port', default=11880)
+@click.option('--seconds', type=float, help='Show every N seconds (default 1s)', default=1)
+def show(host, port,seconds):
+    """Show values"""
+    import synscan.synscanMotors as synscanMotors
+    import json
+    import time
+    UDP_IP = os.getenv("SYNSCAN_UDP_IP",host)
+    UDP_PORT = os.getenv("SYNSCAN_UDP_PORT",port)
+    smc=synscanMotors.synscanMotors(UDP_IP,UDP_PORT)
+    while True:
+        response=smc.update_current_values(logaxis=3)
+        t = time.localtime()
+        response['TIME']=time.strftime("%H:%M:%S", t)
+        print(json.dumps(
+            response,
+            sort_keys=False,
+            indent=4,
+            separators=(',', ': ')
+        ))
+        time.sleep(seconds)
+
+#SYNCRONIZE
+@click.command()
+@click.option('--host', type=str, help='Synscan mount IP address', default='192.168.4.1')
+@click.option('--port', type=int, help='Synscan mount port', default=11880)
+@click.argument('azimuth',type=float)
+@click.argument('altitude',type=float)
+def syncronize(host, port,azimuth,altitude):
+    """Syncronize actual position with the azimuth/altitude provided"""
+    import synscan.synscanMotors as synscanMotors
+    UDP_IP = os.getenv("SYNSCAN_UDP_IP",host)
+    UDP_PORT = os.getenv("SYNSCAN_UDP_PORT",port)
+    smc=synscanMotors.synscanMotors(UDP_IP,UDP_PORT)
+    smc.set_pos(azimuth,altitude)
 

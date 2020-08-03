@@ -3,9 +3,9 @@
 
 # You can set these variables from the command line.
 SPHINXOPTS    =
-SPHINXBUILD   = ./makecommands.py && sphinx-build
+SPHINXBUILD   = sphinx-build
 SOURCEDIR     = .
-BUILDDIR      = _build
+BUILDDIR      = ../../pysynscandocs
 
 # Put it first so that "make" without argument is like "make help".
 help:

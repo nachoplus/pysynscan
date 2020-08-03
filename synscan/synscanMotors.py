@@ -12,7 +12,7 @@ import time
 UDP_IP = os.getenv("SYNSCAN_UDP_IP","192.168.4.1")
 UDP_PORT = os.getenv("SYNSCAN_UDP_PORT",11880)
 
-LOGGING_LEVEL=os.getenv("SYNSCAN_LOGGING_LEVEL",logging.INFO)
+LOGGING_LEVEL=os.getenv("SYNSCAN_LOGGING_LEVEL",logging.WARNING)
 
 class synscanMotors(synscanComm.synscanComm):
     '''
@@ -20,15 +20,16 @@ class synscanMotors(synscanComm.synscanComm):
     following the document:
     https://inter-static.skywatcher.com/downloads/skywatcher_motor_controller_command_set.pdf
 
-    IMPORTANT NOTES(based on the above doc):
+    **IMPORTANT NOTES** (based on the above doc):
 
-    In the motor controller, there is a hardware timer T1 that is used to generate stepping pulse
-    for stepper motor or reference position for servomotor. The input clock’s frequency of the timer,
-    plus the preset value of this timer, determine the slewing speed of the motors. 
+    * In the motor controller, there is a hardware timer T1 that is used to generate stepping pulse
+      for stepper motor or reference position for servomotor. The input clocks frequency of the timer,
+      plus the preset value of this timer, determine the slewing speed of the motors. 
 
-    ** For GOTO mode, the motor controller will take care of T1 automatically. But motion mode has to be set to tracking=False**
+    * For GOTO mode, the motor controller will take care of T1 automatically. But motion mode has to be set to tracking=False
 
     When T1 generates an interrupt, it might:
+
         * Drive the motor to move 1 step (1 micro-step or 1 encoder tick) for low speed slewing.
         * Drive the motor to move up to 32 steps for high speed slewing. This method applies to motor
           controller firmware version 2.xx. For motor controller with firmware 3.xx or above, the motor
@@ -36,6 +37,7 @@ class synscanMotors(synscanComm.synscanComm):
 
 
     Typical session:
+
         * Check whether the motor is in full stop status. If not, stop it. 
         * Set the motion mode. 
         * Set the parameters, for example, destination or preset value of T1. 
@@ -43,8 +45,12 @@ class synscanMotors(synscanComm.synscanComm):
         * For a GOTO slewing, check the motor status to confirm that the motor stops (Generally means arriving the destination. ).
           For a Speed mode slewing, send "Stop" command to end the session. 
 
-        Generally, the motor controller returns to "Speed Mode" when the motor stops automatically. 
+    Generally, the motor controller returns to "Speed Mode" when the motor stops automatically. 
+
+
     '''
+
+
     def __init__(self,udp_ip=UDP_IP,udp_port=UDP_PORT):
         '''Init UDP comunication '''      
         logging.basicConfig(
@@ -93,7 +99,9 @@ class synscanMotors(synscanComm.synscanComm):
         '''
         Send all cmd in the parameterDict for both axis and return
         a dictionary with the values.
+
         Used by get_parameters and update_current_values functions
+
         '''
         params=dict()
         for axis in range(1,3):
@@ -111,6 +119,15 @@ class synscanMotors(synscanComm.synscanComm):
         Get main motor parameters.
         Some of this parameters are needed for all calculations 
         so they have to be available to the rest of the code
+
+        Parameters are stored in a dict with te following keys:
+
+            * countsPerRevolution
+            * TimerInterruptFreq
+            * StepPeriod
+            * MotorBoardVersion
+            * HighSpeedRatio
+
         '''
         parameterDict={ 'countsPerRevolution':'a',
                         'TimerInterruptFreq':'b',
@@ -147,7 +164,7 @@ class synscanMotors(synscanComm.synscanComm):
             params[axis]['Status']=self.decode_status(params[axis]['Status'])
         self.values=params
         if logaxis==3:
-            logging.info(f'Actual values {params}')
+            logging.info(f'{params}')
         if logaxis in [1,2]:
             logging.info(f'AXIS{logaxis} {params[logaxis]}')
         return params
@@ -157,17 +174,30 @@ class synscanMotors(synscanComm.synscanComm):
         Status msg is 12bits long (3 HEX digits). 
         
         HEX digit1 bits:
-        B0: 1=Tracking,0=Goto
-        B1: 1=CCW,0=CW
-        B2: 1=Fast,0=Slow
+
+        * B0: 1=Tracking,0=Goto
+        * B1: 1=CCW,0=CW
+        * B2: 1=Fast,0=Slow
 
         HEX digit2 bits:
-        B0: 1=Running,0=Stopped
-        B1: 1=Blocked,0=Normal
+
+        * B0: 1=Running,0=Stopped
+        * B1: 1=Blocked,0=Normal
 
         HEX digit3 bits:
-        B0: 0 = Not Init,1 = Init done
-        B1: 1 = Level switch on
+
+        * B0: 0 = Not Init,1 = Init done
+        * B1: 1 = Level switch on
+
+        The decode value is returned as a dictionary with the following keys:
+
+        * Tracking
+        * CCW
+        * FastSpeed
+        * Stopped
+        * Blocked
+        * InitDone
+        * LevelSwitchOn
 
         '''
         A=int(hexstring[0],16)       
@@ -188,21 +218,24 @@ class synscanMotors(synscanComm.synscanComm):
     def set_motion_mode(self,axis,Tracking,CW=True,fastSpeed=False):
         '''Set Motion Mode.
 
-        Channel will always be set to Tracking Mode after stopped
+        NOTE: Channel will always be set to Tracking Mode after stopped
 
-        1byte msg (2 HEX digits)
+        Motion mode msg is 1byte msg (2 HEX digits)
 
         HEX Digit 1 bits:
-        B0: 0=Goto, 1=Tracking
-        B1: 0=Slow, 1=Fast  (T)
-            0=Fast, 1=Slow  (G)
-        B2: 0=S/F, 1=Medium
-        B3: 1x SlowGoto
+
+           * B0: 0=Goto, 1=Tracking
+           * B1: 0=Slow, 1=Fast  (T)
+                 0=Fast, 1=Slow  (G)
+           * B2: 0=S/F, 1=Medium
+           * B3: 1x SlowGoto
 
         HEX Digit 2 bits:  
-        B0: 0=CW,1=CCW
-        B1: 0=Noth,1=South
-        B2: 0=Normal Goto,1=Coarse Goto
+
+           * B0: 0=CW,1=CCW
+           * B1: 0=Noth,1=South
+           * B2: 0=Normal Goto,1=Coarse Goto
+
         '''
         if not Tracking:
             if fastSpeed:
@@ -283,7 +316,7 @@ class synscanMotors(synscanComm.synscanComm):
 
     def set_pos(self,alpha,beta):
         self.set_axis_pos(1,alpha)
-        self.set_axis_pos(1,beta)
+        self.set_axis_pos(2,beta)
 
     def set_goto_target(self,axis,targetDegrees):
         '''GoTo Target value in Degrees. Motors has to be stopped'''
