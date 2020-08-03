@@ -8,26 +8,32 @@ Welcome to pysynscan's documentation!
 
 .. include:: ../README.rst
 
+Examples
+========
+.. automodule:: examples.goto
+   :members:
+   :inherited-members:
+
 
 Command line utilities
 ======================
-.. click:: scripts.cli:goto
+.. click:: synscan.scripts.cli:goto
    :prog: synscanGoto
    :nested: full
 
-.. click:: scripts.cli:track
+.. click:: synscan.scripts.cli:track
    :prog: synscanTrack
    :nested: full
 
-.. click:: scripts.cli:stop
+.. click:: synscan.scripts.cli:stop
    :prog: synscanStop
    :nested: full
 
-.. click:: scripts.cli:show
+.. click:: synscan.scripts.cli:show
    :prog: synscanShow
    :nested: full
 
-.. click:: scripts.cli:syncronize
+.. click:: synscan.scripts.cli:syncronize
    :prog: synscanSync
    :nested: full
 
