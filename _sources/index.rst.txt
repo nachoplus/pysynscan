@@ -10,32 +10,18 @@ Welcome to pysynscan's documentation!
 
 Examples
 ========
-.. automodule:: examples.goto
-   :members:
-   :inherited-members:
+.. toctree::
+   :maxdepth: 2
 
+   examples.rst
 
 Command line utilities
 ======================
-.. click:: synscan.scripts.cli:goto
-   :prog: synscanGoto
-   :nested: full
+.. toctree::
+   :maxdepth: 2
 
-.. click:: synscan.scripts.cli:track
-   :prog: synscanTrack
-   :nested: full
+   cmdlinetools
 
-.. click:: synscan.scripts.cli:stop
-   :prog: synscanStop
-   :nested: full
-
-.. click:: synscan.scripts.cli:show
-   :prog: synscanShow
-   :nested: full
-
-.. click:: synscan.scripts.cli:syncronize
-   :prog: synscanSync
-   :nested: full
 
 API Reference
 =============

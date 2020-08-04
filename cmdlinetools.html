@@ -1,0 +1,278 @@
+
+
+<!doctype html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>synscanGoto &#8212; pysynscan alpha documentation</title>
+    <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="motors module" href="api.html" />
+    <link rel="prev" title="Simple goto" href="examples.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="api.html" title="motors module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="examples.html" title="Simple goto"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pysynscan alpha documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">synscanGoto</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="synscangoto">
+<h1>synscanGoto<a class="headerlink" href="#synscangoto" title="Permalink to this headline">¶</a></h1>
+<p>Do a GOTO to a target azimuth/altitude</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>synscanGoto <span class="o">[</span>OPTIONS<span class="o">]</span> AZIMUTH ALTITUDE
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt id="cmdoption-synscanGoto-host">
+<code class="sig-name descname">--host</code><code class="sig-prename descclassname"> &lt;host&gt;</code><a class="headerlink" href="#cmdoption-synscanGoto-host" title="Permalink to this definition">¶</a></dt>
+<dd><p>Synscan mount IP address</p>
+</dd></dl>
+
+<dl class="std option">
+<dt id="cmdoption-synscanGoto-port">
+<code class="sig-name descname">--port</code><code class="sig-prename descclassname"> &lt;port&gt;</code><a class="headerlink" href="#cmdoption-synscanGoto-port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Synscan mount port</p>
+</dd></dl>
+
+<dl class="std option">
+<dt id="cmdoption-synscanGoto-wait">
+<code class="sig-name descname">--wait</code><code class="sig-prename descclassname"> &lt;wait&gt;</code><a class="headerlink" href="#cmdoption-synscanGoto-wait" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait until finished (default False)</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt id="cmdoption-synscanGoto-arg-AZIMUTH">
+<code class="sig-name descname">AZIMUTH</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-synscanGoto-arg-AZIMUTH" title="Permalink to this definition">¶</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+<dl class="std option">
+<dt id="cmdoption-synscanGoto-arg-ALTITUDE">
+<code class="sig-name descname">ALTITUDE</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-synscanGoto-arg-ALTITUDE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</div>
+<div class="section" id="synscantrack">
+<h1>synscanTrack<a class="headerlink" href="#synscantrack" title="Permalink to this headline">¶</a></h1>
+<p>Move at desired speed (degrees per second)</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>synscanTrack <span class="o">[</span>OPTIONS<span class="o">]</span> AZIMUTH_SPEED ALTITUDE_SPEED
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt id="cmdoption-synscanTrack-host">
+<code class="sig-name descname">--host</code><code class="sig-prename descclassname"> &lt;host&gt;</code><a class="headerlink" href="#cmdoption-synscanTrack-host" title="Permalink to this definition">¶</a></dt>
+<dd><p>Synscan mount IP address</p>
+</dd></dl>
+
+<dl class="std option">
+<dt id="cmdoption-synscanTrack-port">
+<code class="sig-name descname">--port</code><code class="sig-prename descclassname"> &lt;port&gt;</code><a class="headerlink" href="#cmdoption-synscanTrack-port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Synscan mount port</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt id="cmdoption-synscanTrack-arg-AZIMUTH_SPEED">
+<code class="sig-name descname">AZIMUTH_SPEED</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-synscanTrack-arg-AZIMUTH_SPEED" title="Permalink to this definition">¶</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+<dl class="std option">
+<dt id="cmdoption-synscanTrack-arg-ALTITUDE_SPEED">
+<code class="sig-name descname">ALTITUDE_SPEED</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-synscanTrack-arg-ALTITUDE_SPEED" title="Permalink to this definition">¶</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</div>
+<div class="section" id="synscanstop">
+<h1>synscanStop<a class="headerlink" href="#synscanstop" title="Permalink to this headline">¶</a></h1>
+<p>Stop Motors</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>synscanStop <span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt id="cmdoption-synscanStop-host">
+<code class="sig-name descname">--host</code><code class="sig-prename descclassname"> &lt;host&gt;</code><a class="headerlink" href="#cmdoption-synscanStop-host" title="Permalink to this definition">¶</a></dt>
+<dd><p>Synscan mount IP address</p>
+</dd></dl>
+
+<dl class="std option">
+<dt id="cmdoption-synscanStop-port">
+<code class="sig-name descname">--port</code><code class="sig-prename descclassname"> &lt;port&gt;</code><a class="headerlink" href="#cmdoption-synscanStop-port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Synscan mount port</p>
+</dd></dl>
+
+<dl class="std option">
+<dt id="cmdoption-synscanStop-wait">
+<code class="sig-name descname">--wait</code><code class="sig-prename descclassname"> &lt;wait&gt;</code><a class="headerlink" href="#cmdoption-synscanStop-wait" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait until finished</p>
+</dd></dl>
+
+</div>
+<div class="section" id="synscanshow">
+<h1>synscanShow<a class="headerlink" href="#synscanshow" title="Permalink to this headline">¶</a></h1>
+<p>Show values</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>synscanShow <span class="o">[</span>OPTIONS<span class="o">]</span>
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt id="cmdoption-synscanShow-host">
+<code class="sig-name descname">--host</code><code class="sig-prename descclassname"> &lt;host&gt;</code><a class="headerlink" href="#cmdoption-synscanShow-host" title="Permalink to this definition">¶</a></dt>
+<dd><p>Synscan mount IP address</p>
+</dd></dl>
+
+<dl class="std option">
+<dt id="cmdoption-synscanShow-port">
+<code class="sig-name descname">--port</code><code class="sig-prename descclassname"> &lt;port&gt;</code><a class="headerlink" href="#cmdoption-synscanShow-port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Synscan mount port</p>
+</dd></dl>
+
+<dl class="std option">
+<dt id="cmdoption-synscanShow-seconds">
+<code class="sig-name descname">--seconds</code><code class="sig-prename descclassname"> &lt;seconds&gt;</code><a class="headerlink" href="#cmdoption-synscanShow-seconds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show every N seconds (default 1s)</p>
+</dd></dl>
+
+</div>
+<div class="section" id="synscansync">
+<h1>synscanSync<a class="headerlink" href="#synscansync" title="Permalink to this headline">¶</a></h1>
+<p>Syncronize actual position with the azimuth/altitude provided</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>synscanSync <span class="o">[</span>OPTIONS<span class="o">]</span> AZIMUTH ALTITUDE
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt id="cmdoption-synscanSync-host">
+<code class="sig-name descname">--host</code><code class="sig-prename descclassname"> &lt;host&gt;</code><a class="headerlink" href="#cmdoption-synscanSync-host" title="Permalink to this definition">¶</a></dt>
+<dd><p>Synscan mount IP address</p>
+</dd></dl>
+
+<dl class="std option">
+<dt id="cmdoption-synscanSync-port">
+<code class="sig-name descname">--port</code><code class="sig-prename descclassname"> &lt;port&gt;</code><a class="headerlink" href="#cmdoption-synscanSync-port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Synscan mount port</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt id="cmdoption-synscanSync-arg-AZIMUTH">
+<code class="sig-name descname">AZIMUTH</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-synscanSync-arg-AZIMUTH" title="Permalink to this definition">¶</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+<dl class="std option">
+<dt id="cmdoption-synscanSync-arg-ALTITUDE">
+<code class="sig-name descname">ALTITUDE</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-synscanSync-arg-ALTITUDE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">synscanGoto</a></li>
+<li><a class="reference internal" href="#synscantrack">synscanTrack</a></li>
+<li><a class="reference internal" href="#synscanstop">synscanStop</a></li>
+<li><a class="reference internal" href="#synscanshow">synscanShow</a></li>
+<li><a class="reference internal" href="#synscansync">synscanSync</a></li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="examples.html"
+                        title="previous chapter">Simple goto</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="api.html"
+                        title="next chapter">motors module</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/cmdlinetools.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="api.html" title="motors module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="examples.html" title="Simple goto"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pysynscan alpha documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">synscanGoto</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Nacho Mas.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+    </div>
+  </body>
+</html>

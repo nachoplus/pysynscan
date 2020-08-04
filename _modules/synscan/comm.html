@@ -1,0 +1,261 @@
+
+
+<!doctype html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>synscan.comm &#8212; pysynscan alpha documentation</title>
+    <link rel="stylesheet" href="../../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">pysynscan alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">synscan.comm</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for synscan.comm</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: iso-8859-15 -*-</span>
+<span class="c1">#</span>
+<span class="c1"># pysynscan</span>
+<span class="c1"># Copyright (c) July 2020 Nacho Mas</span>
+
+
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">select</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+
+
+
+<span class="n">UDP_IP</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;SYNSCAN_UDP_IP&quot;</span><span class="p">,</span><span class="s2">&quot;192.168.4.1&quot;</span><span class="p">)</span>
+<span class="n">UDP_PORT</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;SYNSCAN_UDP_PORT&quot;</span><span class="p">,</span><span class="mi">11880</span><span class="p">)</span>
+
+<span class="n">LOGGING_LEVEL</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;SYNSCAN_LOGGING_LEVEL&quot;</span><span class="p">,</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+
+<div class="viewcode-block" id="comm"><a class="viewcode-back" href="../../api.html#synscan.comm.comm">[docs]</a><span class="k">class</span> <span class="nc">comm</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    UDP Comunication module.</span>
+<span class="sd">    Virtual. Used as base class. All members are protected</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">udp_ip</span><span class="o">=</span><span class="n">UDP_IP</span><span class="p">,</span><span class="n">udp_port</span><span class="o">=</span><span class="n">UDP_PORT</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Init the UDP socket &#39;&#39;&#39;</span>
+       
+        <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
+            <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> </span><span class="si">%(levelname)s</span><span class="s1">:synscanComm </span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="n">level</span><span class="o">=</span><span class="n">LOGGING_LEVEL</span>
+            <span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;UDP target IP: </span><span class="si">{</span><span class="n">udp_ip</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;UDP target port: </span><span class="si">{</span><span class="n">udp_port</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sock</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="c1"># Internet</span>
+        <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_DGRAM</span><span class="p">)</span> <span class="c1"># UDP</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sock</span><span class="o">.</span><span class="n">setblocking</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">udp_ip</span><span class="o">=</span><span class="n">udp_ip</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">udp_port</span><span class="o">=</span><span class="n">udp_port</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">commOK</span><span class="o">=</span><span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lock</span><span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+
+    
+<div class="viewcode-block" id="comm._send_raw_cmd"><a class="viewcode-back" href="../../api.html#synscan.comm.comm._send_raw_cmd">[docs]</a>    <span class="k">def</span> <span class="nf">_send_raw_cmd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">cmd</span><span class="p">,</span><span class="n">timeout_in_seconds</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Low level send command function &#39;&#39;&#39;</span> 
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">lock</span><span class="p">:</span>   
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sock</span><span class="o">.</span><span class="n">sendto</span><span class="p">(</span><span class="n">cmd</span><span class="p">,(</span><span class="bp">self</span><span class="o">.</span><span class="n">udp_ip</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">udp_port</span><span class="p">))</span>
+            <span class="n">ready</span> <span class="o">=</span> <span class="n">select</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_sock</span><span class="p">],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="n">timeout_in_seconds</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ready</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">commOK</span><span class="o">=</span><span class="kc">True</span>
+                <span class="n">response</span><span class="p">,(</span><span class="n">fromhost</span><span class="p">,</span><span class="n">fromport</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sock</span><span class="o">.</span><span class="n">recvfrom</span><span class="p">(</span><span class="mi">1024</span><span class="p">)</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;response: </span><span class="si">{</span><span class="n">response</span><span class="si">}</span><span class="s2"> host:</span><span class="si">{</span><span class="n">fromhost</span><span class="si">}</span><span class="s2"> port:</span><span class="si">{</span><span class="n">fromport</span><span class="si">}</span><span class="s2">&quot;</span> <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">commOK</span><span class="o">=</span><span class="kc">False</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Socket timeout. </span><span class="si">{</span><span class="n">timeout_in_seconds</span><span class="si">}</span><span class="s2">s without response&quot;</span> <span class="p">)</span>
+                <span class="k">raise</span><span class="p">(</span><span class="ne">NameError</span><span class="p">(</span><span class="s1">&#39;SynscanSocketTimeoutError&#39;</span><span class="p">))</span>
+                <span class="n">response</span> <span class="o">=</span> <span class="kc">False</span>        
+        <span class="k">return</span> <span class="n">response</span></div>
+
+<div class="viewcode-block" id="comm._send_cmd"><a class="viewcode-back" href="../../api.html#synscan.comm.comm._send_cmd">[docs]</a>    <span class="k">def</span> <span class="nf">_send_cmd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">cmd</span><span class="p">,</span><span class="n">axis</span><span class="p">,</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">ndigits</span><span class="o">=</span><span class="mi">6</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Command function &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+           <span class="n">ndigits</span><span class="o">=</span><span class="mi">0</span>
+        <span class="n">msg</span><span class="o">=</span><span class="nb">bytes</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;:</span><span class="si">{</span><span class="n">cmd</span><span class="si">}{</span><span class="n">axis</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">_int2hex</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">ndigits</span><span class="p">)</span><span class="si">}</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;sending cmd:</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">raw_response</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_send_raw_cmd</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="c1">#If everything is OK first char must be &#39;=&#39; (code 61)</span>
+        <span class="k">if</span> <span class="n">raw_response</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="mi">61</span><span class="p">:</span>
+            <span class="n">response</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_hex2int</span><span class="p">(</span><span class="n">raw_response</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">response</span>
+
+        <span class="c1">#If something goes wrong first char must be &#39;!&#39; (code 33)</span>
+        <span class="k">if</span> <span class="n">raw_response</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="mi">33</span><span class="p">:</span>
+            <span class="n">ErrorDict</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">:</span><span class="s1">&#39;UnknownCommand&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">:</span><span class="s1">&#39;CommandLengthError&#39;</span><span class="p">,</span><span class="mi">2</span><span class="p">:</span><span class="s1">&#39;MotorNotStopped&#39;</span><span class="p">,</span><span class="mi">3</span><span class="p">:</span><span class="s1">&#39;InvalidCharacter&#39;</span><span class="p">,</span>
+                       <span class="mi">4</span><span class="p">:</span><span class="s1">&#39;NotInitialized&#39;</span><span class="p">,</span><span class="mi">5</span><span class="p">:</span><span class="s1">&#39;DriverSleeping&#39;</span><span class="p">,</span><span class="mi">7</span><span class="p">:</span><span class="s1">&#39;PECTrainingIsRunning&#39;</span><span class="p">,</span><span class="mi">8</span><span class="p">:</span><span class="s1">&#39;NoValidPECdata&#39;</span><span class="p">}</span>
+            <span class="n">errorNumber</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_hex2int</span><span class="p">(</span><span class="n">raw_response</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">errorNumber</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">]:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown Error </span><span class="si">{</span><span class="n">raw_response</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="k">raise</span><span class="p">(</span><span class="ne">NameError</span><span class="p">(</span><span class="s1">&#39;CMDUnknowError&#39;</span><span class="p">))</span>
+                <span class="k">return</span> <span class="kc">False</span>                    
+            <span class="n">errorStr</span><span class="o">=</span><span class="n">ErrorDict</span><span class="p">[</span><span class="n">errorNumber</span><span class="p">]</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;CMD:</span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s1"> Error:</span><span class="si">{</span><span class="n">errorStr</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">raw_response</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">raise</span><span class="p">(</span><span class="ne">NameError</span><span class="p">(</span><span class="n">errorStr</span><span class="p">))</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="c1">#Catch the rest</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unknown Error </span><span class="si">{</span><span class="n">raw_response</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">raise</span><span class="p">(</span><span class="ne">NameError</span><span class="p">(</span><span class="s1">&#39;CMDUnknowError&#39;</span><span class="p">))</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
+
+
+
+
+
+<div class="viewcode-block" id="comm._int2hex"><a class="viewcode-back" href="../../api.html#synscan.comm.comm._int2hex">[docs]</a>    <span class="k">def</span> <span class="nf">_int2hex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">data</span><span class="p">,</span><span class="n">ndigits</span><span class="o">=</span><span class="mi">6</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Convert data prior to send to the motors following </span>
+<span class="sd">            Synscan Motor Protocol rules</span>
+<span class="sd">   </span>
+<span class="sd">        * 24 bits Data Sample: for HEX number 0x123456, in the data segment of</span>
+<span class="sd">          a command or response, it is sent/received in this order: &quot;5&quot; &quot;6&quot; &quot;3&quot; &quot;4&quot; &quot;1&quot; &quot;2&quot;.</span>
+<span class="sd">        * 16 bits Data Sample: For HEX number 0x1234, in the data segment of a command or </span>
+<span class="sd">          response, it is sent/received in this order: &quot;3&quot; &quot;4&quot; &quot;1&quot; &quot;2&quot;. </span>
+<span class="sd">        * 8 bits Data Sample: For HEX number 0x12, in the data segment of a command or</span>
+<span class="sd">          response, it is sent/received in this order: &quot;1&quot; &quot;2&quot;.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">assert</span> <span class="p">(</span><span class="n">ndigits</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">]),</span> <span class="s2">&quot;ndigits must be one of [0,2,4,6]&quot;</span>
+        <span class="k">if</span> <span class="n">ndigits</span><span class="o">==</span><span class="mi">6</span><span class="p">:</span>
+            <span class="n">strData</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">data</span><span class="si">:</span><span class="s1">06X</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">if</span> <span class="n">ndigits</span><span class="o">==</span><span class="mi">4</span><span class="p">:</span>
+            <span class="n">strData</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">data</span><span class="si">:</span><span class="s1">04X</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">if</span> <span class="n">ndigits</span><span class="o">==</span><span class="mi">2</span><span class="p">:</span>
+            <span class="n">strData</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">data</span><span class="si">:</span><span class="s1">02X</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">if</span> <span class="n">ndigits</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">strData</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">data</span><span class="si">:</span><span class="s1">01X</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">if</span> <span class="n">ndigits</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="n">strData</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;&#39;</span>
+        <span class="n">length</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">strData</span><span class="p">)</span>
+        <span class="n">strHEX</span><span class="o">=</span><span class="s1">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">length</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">):</span>
+            <span class="n">strHEX</span><span class="o">=</span><span class="n">strHEX</span><span class="o">+</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">strData</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s1">(decimal) =&gt; </span><span class="si">{</span><span class="n">strData</span><span class="si">}</span><span class="s1">(hex) =&gt; </span><span class="si">{</span><span class="n">strHEX</span><span class="si">}</span><span class="s1">(synscan hex)&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">strHEX</span></div>
+        
+<div class="viewcode-block" id="comm._hex2int"><a class="viewcode-back" href="../../api.html#synscan.comm.comm._hex2int">[docs]</a>    <span class="k">def</span> <span class="nf">_hex2int</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">data</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Convert data recived from motors following </span>
+<span class="sd">            Synscan Motor Protocol rules</span>
+<span class="sd">   </span>
+<span class="sd">        * 24 bits Data Sample: for HEX number 0x123456, in the data segment of</span>
+<span class="sd">          a command or response, it is sent/received in this order: &quot;5&quot; &quot;6&quot; &quot;3&quot; &quot;4&quot; &quot;1&quot; &quot;2&quot;.</span>
+<span class="sd">        * 16 bits Data Sample: For HEX number 0x1234, in the data segment of a command or </span>
+<span class="sd">          response, it is sent/received in this order: &quot;3&quot; &quot;4&quot; &quot;1&quot; &quot;2&quot;. </span>
+<span class="sd">        * 8 bits Data Sample: For HEX number 0x12, in the data segment of a command or</span>
+<span class="sd">          response, it is sent/received in this order: &quot;1&quot; &quot;2&quot;.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">strData</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> 
+        <span class="n">length</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">strData</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="p">(</span><span class="n">length</span><span class="o">&lt;=</span><span class="mi">6</span><span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;Max allow value is FFFFFF. Actual=</span><span class="si">{</span><span class="n">strData</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="c1">#Special cases</span>
+        <span class="c1">#Some commands dont return data</span>
+        <span class="k">if</span> <span class="n">length</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+        <span class="c1">#Status msg only return 12 bits (1.5bytes or 3 hex digits)</span>
+        <span class="k">if</span> <span class="n">length</span><span class="o">==</span><span class="mi">3</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;3bytes response. Not converting to init. Returning as it as string&#39;</span><span class="p">)</span>        
+            <span class="k">return</span> <span class="n">strData</span>
+        <span class="c1">#General case. Returned msd has 1,2,3 bytes (2,4 or 6 hex digits)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Converting </span><span class="si">{</span><span class="n">strData</span><span class="si">}</span><span class="s1"> to a integer&#39;</span><span class="p">)</span>
+        <span class="n">strHEX</span><span class="o">=</span><span class="s1">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">length</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">):</span>
+            <span class="n">strHEX</span><span class="o">=</span><span class="n">strHEX</span><span class="o">+</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">strData</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">v</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">strHEX</span><span class="p">,</span><span class="mi">16</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">strData</span><span class="si">}</span><span class="s1">(synscan hex) =&gt; </span><span class="si">{</span><span class="n">strHEX</span><span class="si">}</span><span class="s1">(hex) =&gt; </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s1">(decimal)&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">v</span></div>
+
+<div class="viewcode-block" id="comm._test_comm"><a class="viewcode-back" href="../../api.html#synscan.comm.comm._test_comm">[docs]</a>    <span class="k">def</span> <span class="nf">_test_comm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Control msg to check comms&#39;&#39;&#39;</span>
+        <span class="n">MESSAGE</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;:F3</span><span class="se">\r</span><span class="s2">&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Testing comms. Asking if initialized..&quot;</span><span class="p">)</span>
+        <span class="n">response</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_send_raw_cmd</span><span class="p">(</span><span class="n">MESSAGE</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">response</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">&#39;=</span><span class="se">\r</span><span class="s1">&#39;</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mount initialized. Connection OK&quot;</span> <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mount not initialized. Connection FAIL&quot;</span> <span class="p">)</span></div></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">smc</span><span class="o">=</span><span class="n">comm</span><span class="p">()</span>
+    <span class="n">smc</span><span class="o">.</span><span class="n">_int2hex</span><span class="p">(</span><span class="n">smc</span><span class="o">.</span><span class="n">_hex2int</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;1FCA89&#39;</span><span class="p">))</span>
+    <span class="n">smc</span><span class="o">.</span><span class="n">_int2hex</span><span class="p">(</span><span class="n">smc</span><span class="o">.</span><span class="n">_hex2int</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;5F3A&#39;</span><span class="p">),</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">smc</span><span class="o">.</span><span class="n">_int2hex</span><span class="p">(</span><span class="n">smc</span><span class="o">.</span><span class="n">_hex2int</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;B8&#39;</span><span class="p">),</span><span class="mi">2</span><span class="p">)</span>
+
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">pysynscan alpha documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">synscan.comm</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Nacho Mas.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+    </div>
+  </body>
+</html>
