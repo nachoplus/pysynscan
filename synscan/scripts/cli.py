@@ -57,8 +57,8 @@ def stop(host, port,wait):
 @click.option('--host', type=str, help='Synscan mount IP address', default='192.168.4.1')
 @click.option('--port', type=int, help='Synscan mount port', default=11880)
 @click.option('--seconds', type=float, help='Show every N seconds (default 1s)', default=1)
-def show(host, port,seconds):
-    """Show values"""
+def watch(host, port,seconds):
+    """Watch values"""
     import synscan
     import json
     import time
@@ -90,4 +90,24 @@ def syncronize(host, port,azimuth,altitude):
     UDP_PORT = os.getenv("SYNSCAN_UDP_PORT",port)
     smc=synscan.motors(UDP_IP,UDP_PORT)
     smc.set_pos(azimuth,altitude)
+
+#Set On/off auxiliary switch
+@click.command()
+@click.option('--host', type=str, help='Synscan mount IP address', default='192.168.4.1')
+@click.option('--port', type=int, help='Synscan mount port', default=11880)
+@click.option('--seconds', type=float, help='Seconds to automatic deactivation', default=0)
+@click.argument('on',type=bool)
+def switch(host, port, on,seconds):
+    """Activate/Deactivate mount auxiliary switch. ON must be bool (1 or 0)"""
+    import synscan
+    import time
+    UDP_IP = os.getenv("SYNSCAN_UDP_IP",host)
+    UDP_PORT = os.getenv("SYNSCAN_UDP_PORT",port)
+    smc=synscan.motors(UDP_IP,UDP_PORT)
+    if seconds>0:
+        smc.set_switch(on)
+        time.sleep(seconds)
+        smc.set_switch(not on)
+    else:
+        smc.set_switch(on)
 

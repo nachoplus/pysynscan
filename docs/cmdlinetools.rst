@@ -11,10 +11,14 @@
    :prog: synscanStop
    :nested: full
 
-.. click:: synscan.scripts.cli:show
-   :prog: synscanShow
+.. click:: synscan.scripts.cli:watch
+   :prog: synscanWatch
    :nested: full
 
 .. click:: synscan.scripts.cli:syncronize
    :prog: synscanSync
+   :nested: full
+
+.. click:: synscan.scripts.cli:switch
+   :prog: synscanSwitch
    :nested: full

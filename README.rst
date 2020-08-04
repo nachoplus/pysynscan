@@ -39,8 +39,9 @@ Several CLI (command lines interface) are provided::
     synscanGoto 32 10
     synscanTrack 0 1
     synscanStop
-    synscanShow
+    synscanWatch
     synscanSync 10 12
+    synscanSwitch 1
 
 Documentation
 -------------

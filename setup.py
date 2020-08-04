@@ -36,6 +36,7 @@ setup(
       synscanGoto=synscan.scripts.cli:goto
       synscanTrack=synscan.scripts.cli:track
       synscanStop=synscan.scripts.cli:stop
-      synscanShow=synscan.scripts.cli:show
+      synscanWatch=synscan.scripts.cli:watch
       synscanSync=synscan.scripts.cli:syncronize
+      synscanSwitch=synscan.scripts.cli:switch
       """)

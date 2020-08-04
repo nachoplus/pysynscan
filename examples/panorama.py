@@ -11,5 +11,5 @@ for az in range(0,180,30):
     for alt in range(0,90,30):
         smc.goto(az,alt,syncronous=True)    #Goto and wait to finish
         smc.set_switch(True)                #Activate camera with the integrate switch
-        time.sleep(1)
+        time.sleep(2)
         smc.set_switch(False)

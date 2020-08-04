@@ -349,7 +349,7 @@ class motors(comm):
         else:
             value=0
         logging.info(f'Auxiliary switch: {on}')
-        response=self._send_cmd('O',3,value,ndigits=1)
+        response=self._send_cmd('O',1,value,ndigits=1)
         return response
 
     def set_pos(self,alpha,beta):
