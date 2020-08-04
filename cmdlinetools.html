@@ -148,28 +148,28 @@
 </dd></dl>
 
 </div>
-<div class="section" id="synscanshow">
-<h1>synscanShow<a class="headerlink" href="#synscanshow" title="Permalink to this headline">¶</a></h1>
-<p>Show values</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>synscanShow <span class="o">[</span>OPTIONS<span class="o">]</span>
+<div class="section" id="synscanwatch">
+<h1>synscanWatch<a class="headerlink" href="#synscanwatch" title="Permalink to this headline">¶</a></h1>
+<p>Watch values</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>synscanWatch <span class="o">[</span>OPTIONS<span class="o">]</span>
 </pre></div>
 </div>
 <p class="rubric">Options</p>
 <dl class="std option">
-<dt id="cmdoption-synscanShow-host">
-<code class="sig-name descname">--host</code><code class="sig-prename descclassname"> &lt;host&gt;</code><a class="headerlink" href="#cmdoption-synscanShow-host" title="Permalink to this definition">¶</a></dt>
+<dt id="cmdoption-synscanWatch-host">
+<code class="sig-name descname">--host</code><code class="sig-prename descclassname"> &lt;host&gt;</code><a class="headerlink" href="#cmdoption-synscanWatch-host" title="Permalink to this definition">¶</a></dt>
 <dd><p>Synscan mount IP address</p>
 </dd></dl>
 
 <dl class="std option">
-<dt id="cmdoption-synscanShow-port">
-<code class="sig-name descname">--port</code><code class="sig-prename descclassname"> &lt;port&gt;</code><a class="headerlink" href="#cmdoption-synscanShow-port" title="Permalink to this definition">¶</a></dt>
+<dt id="cmdoption-synscanWatch-port">
+<code class="sig-name descname">--port</code><code class="sig-prename descclassname"> &lt;port&gt;</code><a class="headerlink" href="#cmdoption-synscanWatch-port" title="Permalink to this definition">¶</a></dt>
 <dd><p>Synscan mount port</p>
 </dd></dl>
 
 <dl class="std option">
-<dt id="cmdoption-synscanShow-seconds">
-<code class="sig-name descname">--seconds</code><code class="sig-prename descclassname"> &lt;seconds&gt;</code><a class="headerlink" href="#cmdoption-synscanShow-seconds" title="Permalink to this definition">¶</a></dt>
+<dt id="cmdoption-synscanWatch-seconds">
+<code class="sig-name descname">--seconds</code><code class="sig-prename descclassname"> &lt;seconds&gt;</code><a class="headerlink" href="#cmdoption-synscanWatch-seconds" title="Permalink to this definition">¶</a></dt>
 <dd><p>Show every N seconds (default 1s)</p>
 </dd></dl>
 
@@ -207,6 +207,39 @@
 </dd></dl>
 
 </div>
+<div class="section" id="synscanswitch">
+<h1>synscanSwitch<a class="headerlink" href="#synscanswitch" title="Permalink to this headline">¶</a></h1>
+<p>Activate/Deactivate mount auxiliary switch. ON must be bool (1 or 0)</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>synscanSwitch <span class="o">[</span>OPTIONS<span class="o">]</span> ON
+</pre></div>
+</div>
+<p class="rubric">Options</p>
+<dl class="std option">
+<dt id="cmdoption-synscanSwitch-host">
+<code class="sig-name descname">--host</code><code class="sig-prename descclassname"> &lt;host&gt;</code><a class="headerlink" href="#cmdoption-synscanSwitch-host" title="Permalink to this definition">¶</a></dt>
+<dd><p>Synscan mount IP address</p>
+</dd></dl>
+
+<dl class="std option">
+<dt id="cmdoption-synscanSwitch-port">
+<code class="sig-name descname">--port</code><code class="sig-prename descclassname"> &lt;port&gt;</code><a class="headerlink" href="#cmdoption-synscanSwitch-port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Synscan mount port</p>
+</dd></dl>
+
+<dl class="std option">
+<dt id="cmdoption-synscanSwitch-seconds">
+<code class="sig-name descname">--seconds</code><code class="sig-prename descclassname"> &lt;seconds&gt;</code><a class="headerlink" href="#cmdoption-synscanSwitch-seconds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Seconds to automatic deactivation</p>
+</dd></dl>
+
+<p class="rubric">Arguments</p>
+<dl class="std option">
+<dt id="cmdoption-synscanSwitch-arg-ON">
+<code class="sig-name descname">ON</code><code class="sig-prename descclassname"></code><a class="headerlink" href="#cmdoption-synscanSwitch-arg-ON" title="Permalink to this definition">¶</a></dt>
+<dd><p>Required argument</p>
+</dd></dl>
+
+</div>
 
 
             <div class="clearer"></div>
@@ -220,8 +253,9 @@
 <li><a class="reference internal" href="#">synscanGoto</a></li>
 <li><a class="reference internal" href="#synscantrack">synscanTrack</a></li>
 <li><a class="reference internal" href="#synscanstop">synscanStop</a></li>
-<li><a class="reference internal" href="#synscanshow">synscanShow</a></li>
+<li><a class="reference internal" href="#synscanwatch">synscanWatch</a></li>
 <li><a class="reference internal" href="#synscansync">synscanSync</a></li>
+<li><a class="reference internal" href="#synscanswitch">synscanSwitch</a></li>
 </ul>
 
   <h4>Previous topic</h4>
