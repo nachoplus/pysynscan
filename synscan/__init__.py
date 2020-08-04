@@ -1,2 +1,4 @@
 name = 'synscan'
-__all__ = ['synscanMotors', 'synscanComm']
+__all__ = []
+
+from synscan.motors import motors

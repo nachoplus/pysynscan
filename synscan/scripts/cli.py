@@ -16,10 +16,10 @@ import os
 @click.argument('altitude',type=float)
 def goto(host, port,azimuth,altitude,wait):
     """Do a GOTO to a target azimuth/altitude"""
-    import synscan.synscanMotors as synscanMotors
+    import synscan
     UDP_IP = os.getenv("SYNSCAN_UDP_IP",host)
     UDP_PORT = os.getenv("SYNSCAN_UDP_PORT",port)
-    smc=synscanMotors.synscanMotors(UDP_IP,UDP_PORT)
+    smc=synscan.motors(UDP_IP,UDP_PORT)
     smc.goto(azimuth,altitude,syncronous=wait)
 
 
@@ -31,10 +31,10 @@ def goto(host, port,azimuth,altitude,wait):
 @click.argument('altitude_speed',type=float)
 def track(host, port, azimuth_speed, altitude_speed):
     """Move at desired speed (degrees per second)"""
-    import synscan.synscanMotors as synscanMotors
+    import synscan
     UDP_IP = os.getenv("SYNSCAN_UDP_IP",host)
     UDP_PORT = os.getenv("SYNSCAN_UDP_PORT",port)
-    smc=synscanMotors.synscanMotors(UDP_IP,UDP_PORT)
+    smc=synscan.motors(UDP_IP,UDP_PORT)
     smc.track(azimuth_speed,altitude_speed)
 
 #STOP
@@ -44,12 +44,12 @@ def track(host, port, azimuth_speed, altitude_speed):
 @click.option('--wait', type=bool, help='Wait until finished', default=True)
 def stop(host, port,wait):
     """Stop Motors"""
-    import synscan.synscanMotors as synscanMotors
+    import synscan
     UDP_IP = os.getenv("SYNSCAN_UDP_IP",host)
     UDP_PORT = os.getenv("SYNSCAN_UDP_PORT",port)
-    smc=synscanMotors.synscanMotors(UDP_IP,UDP_PORT)
-    smc.stop_motion(1,syncronous=wait)
-    smc.stop_motion(2,syncronous=wait)
+    smc=synscan.motors(UDP_IP,UDP_PORT)
+    smc.axis_stop_motion(1,syncronous=wait)
+    smc.axis_stop_motion(2,syncronous=wait)
 
 
 #SHOW
@@ -59,12 +59,12 @@ def stop(host, port,wait):
 @click.option('--seconds', type=float, help='Show every N seconds (default 1s)', default=1)
 def show(host, port,seconds):
     """Show values"""
-    import synscan.synscanMotors as synscanMotors
+    import synscan
     import json
     import time
     UDP_IP = os.getenv("SYNSCAN_UDP_IP",host)
     UDP_PORT = os.getenv("SYNSCAN_UDP_PORT",port)
-    smc=synscanMotors.synscanMotors(UDP_IP,UDP_PORT)
+    smc=synscan.motors(UDP_IP,UDP_PORT)
     while True:
         response=smc.update_current_values(logaxis=3)
         t = time.localtime()
@@ -85,9 +85,9 @@ def show(host, port,seconds):
 @click.argument('altitude',type=float)
 def syncronize(host, port,azimuth,altitude):
     """Syncronize actual position with the azimuth/altitude provided"""
-    import synscan.synscanMotors as synscanMotors
+    import synscan
     UDP_IP = os.getenv("SYNSCAN_UDP_IP",host)
     UDP_PORT = os.getenv("SYNSCAN_UDP_PORT",port)
-    smc=synscanMotors.synscanMotors(UDP_IP,UDP_PORT)
+    smc=synscan.motors(UDP_IP,UDP_PORT)
     smc.set_pos(azimuth,altitude)
 

@@ -17,7 +17,7 @@ UDP_PORT = os.getenv("SYNSCAN_UDP_PORT",11880)
 
 LOGGING_LEVEL=os.getenv("SYNSCAN_LOGGING_LEVEL",logging.INFO)
 
-class synscanComm:
+class comm:
     '''
     UDP Comunication module.
     Virtual. Used as base class. All members are protected
@@ -104,17 +104,18 @@ class synscanComm:
           response, it is sent/received in this order: "1" "2".
         '''
 
-        assert (ndigits in [0,2,4,6]), "ndigits must be one of [0,2,4,6]"
+        assert (ndigits in [0,1,2,4,6]), "ndigits must be one of [0,2,4,6]"
         if ndigits==6:
             strData=f'{data:06X}'
         if ndigits==4:
             strData=f'{data:04X}'
         if ndigits==2:
             strData=f'{data:02X}'
+        if ndigits==1:
+            strData=f'{data:01X}'
         if ndigits==0:
             strData=f''
         length=len(strData)
-        logging.debug(f'Converting {data} to a synscan hex')
         strHEX=''
         for i in range(length,0,-2):
             strHEX=strHEX+f'{strData[i-2:i]}'
@@ -164,7 +165,7 @@ class synscanComm:
             logging.info(f"Mount not initialized. Connection FAIL" )
 
 if __name__ == '__main__':
-    smc=synscanComm()
+    smc=comm()
     smc._int2hex(smc._hex2int(b'1FCA89'))
     smc._int2hex(smc._hex2int(b'5F3A'),4)
     smc._int2hex(smc._hex2int(b'B8'),2)

@@ -6,7 +6,7 @@
 
 import os
 import logging
-import synscan.synscanComm as synscanComm
+from synscan.comm import comm
 import time
 
 UDP_IP = os.getenv("SYNSCAN_UDP_IP","192.168.4.1")
@@ -14,7 +14,7 @@ UDP_PORT = os.getenv("SYNSCAN_UDP_PORT",11880)
 
 LOGGING_LEVEL=os.getenv("SYNSCAN_LOGGING_LEVEL",logging.WARNING)
 
-class synscanMotors(synscanComm.synscanComm):
+class motors(comm):
     '''
     Implementation of all motor commands and logic
     following the document:
@@ -60,7 +60,7 @@ class synscanMotors(synscanComm.synscanComm):
             format='%(asctime)s %(levelname)s:synscanMotor: %(message)s',
             level=LOGGING_LEVEL
             )
-        super(synscanMotors, self).__init__(udp_ip,udp_port)
+        super(motors, self).__init__(udp_ip,udp_port)
         self._init()
         self.update_current_values()
 
@@ -74,7 +74,7 @@ class synscanMotors(synscanComm.synscanComm):
             logging.warning(error)
             logging.warning(f'Retriying in {retrySec}..')
             time.sleep(retrySec)
-            self.init()
+            self._init()
 
     def _degreesPerSecond2T1preset(self,axis,degreesPerSecond):
         countsPerSecond=self.degrees2counts(axis,degreesPerSecond)
@@ -285,8 +285,9 @@ class synscanMotors(synscanComm.synscanComm):
         '''Set the tracking speed in degreesPerSecond'''
         logging.info(f'AXIS{axis}: Setting speed to:{degreesPerSecond} degrees per second')
         if degreesPerSecond!=0:
-            response=self.set_T1_preset(axis,int(self.degreesPerSecond2T1preset(axis,abs(degreesPerSecond))))
+            response=self._set_T1_preset(axis,int(self._degreesPerSecond2T1preset(axis,abs(degreesPerSecond))))
         else:
+            logging.info(f'AXIS{axis}: Requested speed==0. Stopping axis')
             response=self.axis_stop_motion(axis)
         return response
 
@@ -347,8 +348,8 @@ class synscanMotors(synscanComm.synscanComm):
             value=1
         else:
             value=0
-        logging.info(f'Auxiliary swtich: {on}')
-        response=self._send_cmd('O',value)
+        logging.info(f'Auxiliary switch: {on}')
+        response=self._send_cmd('O',3,value,ndigits=1)
         return response
 
     def set_pos(self,alpha,beta):
@@ -356,7 +357,7 @@ class synscanMotors(synscanComm.synscanComm):
         self.axis_set_pos(1,alpha)
         self.axis_set_pos(2,beta)
 
-    def goto(self,alpha,beta,syncronous=True):
+    def goto(self,alpha,beta,syncronous=False):
         '''GOTO. alpha,beta in degrees'''
         logging.info(f'GOTO axis1={alpha} axis2={beta} degrees')
         for axis in [1,2]:
@@ -425,7 +426,7 @@ class synscanMotors(synscanComm.synscanComm):
 
 
 if __name__ == '__main__':
-    smc=synscanMotors()
+    smc=motors()
     smc.set_pos(0,0)
     #AXIS to test
     AXIS=2
