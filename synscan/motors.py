@@ -12,7 +12,7 @@ import time
 UDP_IP = os.getenv("SYNSCAN_UDP_IP","192.168.4.1")
 UDP_PORT = os.getenv("SYNSCAN_UDP_PORT",11880)
 
-LOGGING_LEVEL=os.getenv("SYNSCAN_LOGGING_LEVEL",logging.WARNING)
+LOGGING_LEVEL=os.getenv("SYNSCAN_LOGGING_LEVEL",logging.INFO)
 
 class motors(comm):
     '''
@@ -138,7 +138,7 @@ class motors(comm):
     def axis_get_pos(self,axis):
         '''Get actual position in Degrees.'''
         counts=self.axis_get_posCounts(axis)
-        return self.counts2degrees(counts)
+        return self.counts2degrees(axis,counts)
 
     def axis_set_pos(self,axis,degrees):
         '''Syncronize position Degrees.'''
@@ -253,6 +253,16 @@ class motors(comm):
         response=self._send_cmd('S',axis,targetCounts+0x800000)
         return response
 
+    def axis_set_goto_targetIncrementCounts(self,axis,targetCounts):
+        #NOT IN USE. HAVE TO BE TESTED!!
+        '''GoTo Target increment in StepsCounts. Motors has to be stopped'''
+        logging.info(f'AXIS{axis}: Setting goto target INCREMENT to {targetCounts} counts')
+        #Position values are offseting by 0x800000
+        response=self._send_cmd('H',axis,targetCounts+0x800000)
+        #Set Brake Point Increment
+        response=self._send_cmd('M',axis,0x000DAC)
+        return response
+
     def axis_wait2stop(self,axis):    
         logging.info(f'AXIS{axis}: Waitting to stop.')
         self.update_current_values()
@@ -277,7 +287,8 @@ class motors(comm):
 
     def axis_goto(self,axis,targetDegrees):
         self.axis_stop_motion(axis)
-        self.axis_set_motion_mode(axis,False,False,False)
+        actualPos=self.axis_get_pos(axis)
+        self.axis_set_motion_mode(axis,False,(targetDegrees<actualPos),True)
         self.axis_set_goto_target(axis,targetDegrees)
         self.axis_start_motion(axis)
 
@@ -309,6 +320,7 @@ class motors(comm):
                 self.axis_set_speed(axis,speed)
                 return 
         else:
+            self.axis_set_motion_mode(axis,True,(speed <0),False)
             self.axis_set_speed(axis,speed)
             self.axis_start_motion(axis)
             return
@@ -360,13 +372,17 @@ class motors(comm):
     def goto(self,alpha,beta,syncronous=False):
         '''GOTO. alpha,beta in degrees'''
         logging.info(f'GOTO axis1={alpha} axis2={beta} degrees')
+        angle={}
+        angle[1]=alpha
+        angle[2]=beta
         for axis in [1,2]:
+            self.axis_goto(axis,angle[axis])
+            '''
             self.axis_stop_motion(axis)
-            self.axis_set_motion_mode(axis,False,False,False)
-        self.axis_set_goto_target(1,alpha)
-        self.axis_set_goto_target(2,beta)
-        for axis in [1,2]:
+            self.axis_set_motion_mode(axis,False,False,True)
+            self.axis_set_goto_target(axis,angle[axis])
             self.axis_start_motion(axis)
+            '''
         if syncronous:
             for axis in [1,2]:
                 self.axis_wait2stop(axis)

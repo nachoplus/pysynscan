@@ -15,7 +15,7 @@ From sources::
 
 From pip::
 
-    TODO
+    pip install synscan
 
 Use
 ---

@@ -1,0 +1,3 @@
+SYNSCAN PRO -> LINUX PC -> ACTUAL MOUNT
+rm captura.dat && ncat -nlku 192.168.1.129 11880  -c 'tee -a captura.dat | ncat  -nu  192.168.5.1 11880 | tee -a captura.dat'
+cat captura.dat | sed 's/^M/\n/g' >captura.ok
