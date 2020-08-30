@@ -10,7 +10,7 @@ from synscan.comm import comm
 import time
 
 UDP_IP = os.getenv("SYNSCAN_UDP_IP","192.168.4.1")
-UDP_PORT = os.getenv("SYNSCAN_UDP_PORT",11880)
+UDP_PORT = int(os.getenv("SYNSCAN_UDP_PORT",11880))
 
 LOGGING_LEVEL=os.getenv("SYNSCAN_LOGGING_LEVEL",logging.INFO)
 
@@ -103,6 +103,8 @@ class motors(comm):
                 except NameError as error:
                     logging.warning(error)
                     raise(NameError('getValuesError'))
+            #Send init done
+            self._send_cmd('F',axis)
         return params
 
     def get_parameters(self):

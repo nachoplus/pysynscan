@@ -12,7 +12,7 @@ with open('README.rst', encoding='utf-8') as f:
 
 setup(
     name='synscan',
-    version='0.1.1',
+    version='0.1.2',
     description=u"Pure python3 skywatcher synscan protocol",
     long_description=long_description,
     classifiers=[],

@@ -18,7 +18,7 @@ def goto(host, port,azimuth,altitude,wait):
     """Do a GOTO to a target azimuth/altitude"""
     import synscan
     UDP_IP = os.getenv("SYNSCAN_UDP_IP",host)
-    UDP_PORT = os.getenv("SYNSCAN_UDP_PORT",port)
+    UDP_PORT = int(os.getenv("SYNSCAN_UDP_PORT",port))
     smc=synscan.motors(UDP_IP,UDP_PORT)
     smc.goto(azimuth,altitude,syncronous=wait)
 
@@ -33,7 +33,7 @@ def track(host, port, azimuth_speed, altitude_speed):
     """Move at desired speed (degrees per second)"""
     import synscan
     UDP_IP = os.getenv("SYNSCAN_UDP_IP",host)
-    UDP_PORT = os.getenv("SYNSCAN_UDP_PORT",port)
+    UDP_PORT = int(os.getenv("SYNSCAN_UDP_PORT",port))
     smc=synscan.motors(UDP_IP,UDP_PORT)
     smc.track(azimuth_speed,altitude_speed)
 
@@ -46,7 +46,7 @@ def stop(host, port,wait):
     """Stop Motors"""
     import synscan
     UDP_IP = os.getenv("SYNSCAN_UDP_IP",host)
-    UDP_PORT = os.getenv("SYNSCAN_UDP_PORT",port)
+    UDP_PORT = int(os.getenv("SYNSCAN_UDP_PORT",port))
     smc=synscan.motors(UDP_IP,UDP_PORT)
     smc.axis_stop_motion(1,syncronous=wait)
     smc.axis_stop_motion(2,syncronous=wait)
@@ -63,7 +63,7 @@ def watch(host, port,seconds):
     import json
     import time
     UDP_IP = os.getenv("SYNSCAN_UDP_IP",host)
-    UDP_PORT = os.getenv("SYNSCAN_UDP_PORT",port)
+    UDP_PORT = int(os.getenv("SYNSCAN_UDP_PORT",port))
     smc=synscan.motors(UDP_IP,UDP_PORT)
     while True:
         response=smc.update_current_values(logaxis=3)
@@ -87,7 +87,7 @@ def syncronize(host, port,azimuth,altitude):
     """Syncronize actual position with the azimuth/altitude provided"""
     import synscan
     UDP_IP = os.getenv("SYNSCAN_UDP_IP",host)
-    UDP_PORT = os.getenv("SYNSCAN_UDP_PORT",port)
+    UDP_PORT = int(os.getenv("SYNSCAN_UDP_PORT",port))
     smc=synscan.motors(UDP_IP,UDP_PORT)
     smc.set_pos(azimuth,altitude)
 
@@ -102,7 +102,7 @@ def switch(host, port, on,seconds):
     import synscan
     import time
     UDP_IP = os.getenv("SYNSCAN_UDP_IP",host)
-    UDP_PORT = os.getenv("SYNSCAN_UDP_PORT",port)
+    UDP_PORT = int(os.getenv("SYNSCAN_UDP_PORT",port))
     smc=synscan.motors(UDP_IP,UDP_PORT)
     if seconds>0:
         smc.set_switch(on)
