@@ -50,7 +50,20 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="synscangoto">
+  <p>By defaults connection parameters are:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SYNSCAN_UDP_IP</span><span class="o">=</span><span class="mf">192.168</span><span class="o">.</span><span class="mf">4.1</span>
+<span class="n">SYNSCAN_UDP_PORT</span><span class="o">=</span><span class="mi">11880</span>
+<span class="n">SYNSCAN_LOGGING_LEVEL</span><span class="o">=</span><span class="n">INFO</span>
+</pre></div>
+</div>
+<p>This values can be changed via enviroment vars:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">export</span> <span class="n">SYNSCAN_UDP_IP</span><span class="o">=</span><span class="mf">192.168</span><span class="o">.</span><span class="mf">5.1</span>
+<span class="n">export</span> <span class="n">SYNSCAN_UDP_PORT</span><span class="o">=</span><span class="mi">11880</span>
+<span class="n">export</span> <span class="n">SYNSCAN_LOGGING_LEVEL</span><span class="o">=</span><span class="n">WARNING</span>
+</pre></div>
+</div>
+<p>Also every CLI command has –host and –port parameters. Enviromental vars take precedence.</p>
+<div class="section" id="synscangoto">
 <h1>synscanGoto<a class="headerlink" href="#synscangoto" title="Permalink to this headline">¶</a></h1>
 <p>Do a GOTO to a target azimuth/altitude</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>synscanGoto <span class="o">[</span>OPTIONS<span class="o">]</span> AZIMUTH ALTITUDE

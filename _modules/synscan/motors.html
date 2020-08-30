@@ -56,7 +56,7 @@
 <span class="kn">import</span> <span class="nn">time</span>
 
 <span class="n">UDP_IP</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;SYNSCAN_UDP_IP&quot;</span><span class="p">,</span><span class="s2">&quot;192.168.4.1&quot;</span><span class="p">)</span>
-<span class="n">UDP_PORT</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;SYNSCAN_UDP_PORT&quot;</span><span class="p">,</span><span class="mi">11880</span><span class="p">)</span>
+<span class="n">UDP_PORT</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;SYNSCAN_UDP_PORT&quot;</span><span class="p">,</span><span class="mi">11880</span><span class="p">))</span>
 
 <span class="n">LOGGING_LEVEL</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;SYNSCAN_LOGGING_LEVEL&quot;</span><span class="p">,</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
 
@@ -149,6 +149,8 @@
                 <span class="k">except</span> <span class="ne">NameError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
                     <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
                     <span class="k">raise</span><span class="p">(</span><span class="ne">NameError</span><span class="p">(</span><span class="s1">&#39;getValuesError&#39;</span><span class="p">))</span>
+            <span class="c1">#Send init done</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_send_cmd</span><span class="p">(</span><span class="s1">&#39;F&#39;</span><span class="p">,</span><span class="n">axis</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">params</span></div>
 
 <div class="viewcode-block" id="motors.get_parameters"><a class="viewcode-back" href="../../api.html#synscan.motors.motors.get_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">get_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
