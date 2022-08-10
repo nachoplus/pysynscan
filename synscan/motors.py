@@ -248,7 +248,7 @@ class motors(comm):
         return response
 
     def axis_get_posCounts(self,axis):
-        '''Get actual postion in StepsCounts.'''
+        '''Get actual position in StepsCounts.'''
         #Position values are offseting by 0x800000
         response=self._send_cmd('j',axis)-0x800000
         return response
@@ -258,7 +258,7 @@ class motors(comm):
         if not self.params[axis]['countsPerRevolution']:
           return None
         targetAngle=targetCounts*360/self.params[axis]['countsPerRevolution']
-        logging.info(f'AXIS{axis}: Setting goto target to {targetCounts} counts ({targetAngle deg})')
+        logging.info(f'AXIS{axis}: Setting goto target to {targetCounts} counts ({targetAngle} deg)')
         #Position values are offseting by 0x800000
         response=self._send_cmd('S',axis,targetCounts+0x800000)
         return response
@@ -269,7 +269,7 @@ class motors(comm):
         if not self.params[axis]['countsPerRevolution']:
           return None
         targetAngle=targetCounts*360/self.params[axis]['countsPerRevolution']
-        logging.info(f'AXIS{axis}: Setting goto target INCREMENT to {targetCounts} counts ({targetAngle deg})')
+        logging.info(f'AXIS{axis}: Setting goto target INCREMENT to {targetCounts} counts ({targetAngle} deg)')
         #Position values are offseting by 0x800000
         response=self._send_cmd('H',axis,targetCounts+0x800000)
         #Set Brake Point Increment
@@ -450,6 +450,10 @@ class motors(comm):
             for axis in range(1,3):
                 #Position values are offseting by 0x800000
                 params[axis][parameter]=params[axis][parameter]-0x800000
+                if self.params[axis]['countsPerRevolution']:
+                  params[axis][parameter+'Deg']=params[axis][parameter]*360/self.params[axis]['countsPerRevolution']
+                else:
+                  params[axis][parameter+'Deg']=0
         for axis in range(1,3):
             params[axis]['Status']=self._decode_status(params[axis]['Status'])
             if not self.params[axis]['countsPerRevolution']:

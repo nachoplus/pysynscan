@@ -15,7 +15,7 @@ import os
 @click.argument('azimuth',type=float)
 @click.argument('altitude',type=float)
 def goto(host, port,azimuth,altitude,wait):
-    """Do a GOTO to a target azimuth/altitude"""
+    """Do a GOTO to a target azimuth/altitude. Use '--' before AZIMUTH ALTITUDE with negative values"""
     import synscan
     UDP_IP = os.getenv("SYNSCAN_UDP_IP",host)
     UDP_PORT = int(os.getenv("SYNSCAN_UDP_PORT",port))
@@ -30,7 +30,7 @@ def goto(host, port,azimuth,altitude,wait):
 @click.argument('azimuth_speed',type=float)
 @click.argument('altitude_speed',type=float)
 def track(host, port, azimuth_speed, altitude_speed):
-    """Move at desired speed (degrees per second)"""
+    """Move at desired speed (degrees per second). Use '--' before AZIMUTH ALTITUDE with negative values"""
     import synscan
     UDP_IP = os.getenv("SYNSCAN_UDP_IP",host)
     UDP_PORT = int(os.getenv("SYNSCAN_UDP_PORT",port))
@@ -84,7 +84,7 @@ def watch(host, port,seconds):
 @click.argument('azimuth',type=float)
 @click.argument('altitude',type=float)
 def synchronize(host, port,azimuth,altitude):
-    """Synchronize actual position with the azimuth/altitude provided"""
+    """Synchronize actual position with the azimuth/altitude provided. Use '--' before AZIMUTH ALTITUDE with negative values"""
     import synscan
     UDP_IP = os.getenv("SYNSCAN_UDP_IP",host)
     UDP_PORT = int(os.getenv("SYNSCAN_UDP_PORT",port))
