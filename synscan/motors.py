@@ -347,13 +347,19 @@ class motors(comm):
     def degrees2counts(self,axis,degrees):
         '''Return position or speed in counts for a given deg or deg/seconds value'''
         CPR=self.params[axis]['countsPerRevolution']
-        value=degrees*CPR/360
+        if CPR:
+            value=degrees*CPR/360
+        else:
+			value=0
         return value
 
     def counts2degrees(self,axis,counts):
         '''Return position or speed in degrees for a given counts or counts/seconds value'''
         CPR=self.params[axis]['countsPerRevolution']
-        value=counts*360/CPR
+        if CPR:
+			value=counts*360/CPR
+		else:
+			value=0
         return value
 
     def set_switch(self,on):
