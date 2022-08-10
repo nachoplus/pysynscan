@@ -3,6 +3,43 @@
 # pysynscan
 # Copyright (c) July 2020 Nacho Mas
 
+# Implemented
+#      F  Initialization Done
+#      G  Set Motion Mode
+#      I  Set Step Period (T1 preset value)
+#      S  Set Goto Target 
+#      H  SetGotoTargetIncrement
+#      M  SetBreakPointIncrement
+#      E  Set Position / SetAxisPosition
+#      J  Start Motion
+#      K  Stop Motion / AxisStop (Not Instant stop)
+#      O  Set Aux Switch On/Off
+#      h  Inquire Goto Target Position
+#      j  Inquire Position / GetAxisPosition
+#      i  Inquire Step Period
+#      f  Inquire Status / GetAxisStatus
+#      a  Inquire Counts Per Revolution / InquireGridPerRevolution
+#      b  Inquire Timer Interrupt Freq
+#      e  Inquire Motor Board Version
+#      g  Inquire High Speed Ratio
+#
+# Not implemented
+#      D  Inquire 1X Tracking Period 
+#      d  Inquire Tele. Axis Position 
+#      L  AxisStop / Instant Stop
+#      P  Set AutoGuide Speed 
+#      Q  Run Bootloader Mode 
+#      q  Extended Inquire
+#      s  InquirePECPeriod
+#      U  SetBreakSteps
+#      V  Set Polar Scope LED brightness 
+#      W  Extended Setting
+#
+# Tested successfully on Star Adventurer Mini (AXIS1 only), but goto does not stop.
+#
+# References: (for direct motor control, not via SynScan hand Control V3/V4)
+# https://github.com/skywatcher-pacific/skywatcher_open/wiki/Skywatcher-Protocol
+# https://inter-static.skywatcher.com/downloads/skywatcher_motor_controller_command_set.pdf
 
 import os
 import logging
@@ -16,7 +53,7 @@ LOGGING_LEVEL=os.getenv("SYNSCAN_LOGGING_LEVEL",logging.INFO)
 
 class motors(comm):
     '''
-    Implementation of all motor commands and logic
+    Implementation of motor commands and logic
     following the document:
     https://inter-static.skywatcher.com/downloads/skywatcher_motor_controller_command_set.pdf
 
@@ -104,7 +141,7 @@ class motors(comm):
                     logging.warning(error)
                     raise(NameError('getValuesError'))
             #Send init done
-            self._send_cmd('F',axis)
+            self._send_cmd('F',axis)  # Initialize
         return params
 
     def get_parameters(self):
@@ -122,11 +159,11 @@ class motors(comm):
             * HighSpeedRatio
 
         '''
-        parameterDict={ 'countsPerRevolution':'a',
-                        'TimerInterruptFreq':'b',
-                        'StepPeriod':'i',
-                        'MotorBoardVersion':'e',
-                        'HighSpeedRatio':'g',
+        parameterDict={ 'countsPerRevolution':'a',  # Inquire Counts Per Revolution 
+                        'TimerInterruptFreq':'b',   # Inquire Timer Interrupt Freq
+                        'StepPeriod':'i',           # Inquire Step Period 
+                        'MotorBoardVersion':'e',    # Inquire Motor Board Version 
+                        'HighSpeedRatio':'g',       # Inquire High Speed Ratio
                         }
         try:
             params=self.get_values(parameterDict)
@@ -236,7 +273,7 @@ class motors(comm):
         value=value+speedBit*32+CW
         #Send as two HEX digits
         logging.info(f'AXIS{axis}: Setting Motion Mode: {value} HEX:{value:02X}')
-        response=self._send_cmd('G',axis,value,ndigits=2) 
+        response=self._send_cmd('G',axis,value,ndigits=2)   # SetMotionMode
         return response        
 
     def _set_T1_preset(self,axis,value):
@@ -244,23 +281,23 @@ class motors(comm):
         if not self.params[axis]['countsPerRevolution']:
           return None
         logging.info(f'AXIS{axis}: Setting step_period to: {value} counts per seconds')
-        response=self._send_cmd('I',axis,value)
+        response=self._send_cmd('I',axis,value) # SetStepPeriod
         return response
 
     def axis_get_posCounts(self,axis):
         '''Get actual position in StepsCounts.'''
         #Position values are offseting by 0x800000
-        response=self._send_cmd('j',axis)-0x800000
+        response=self._send_cmd('j',axis)-0x800000  # GetAxisPosition
         return response
 
     def axis_set_goto_targetCounts(self,axis,targetCounts):
         '''GoTo Target value in StepsCounts. Motors has to be stopped'''
         if not self.params[axis]['countsPerRevolution']:
           return None
-        targetAngle=targetCounts*360/self.params[axis]['countsPerRevolution']
+        targetAngle=self.counts2degrees(targetCounts)
         logging.info(f'AXIS{axis}: Setting goto target to {targetCounts} counts ({targetAngle} deg)')
         #Position values are offseting by 0x800000
-        response=self._send_cmd('S',axis,targetCounts+0x800000)
+        response=self._send_cmd('S',axis,targetCounts+0x800000) # SetGotoTarget 
         return response
 
     def axis_set_goto_targetIncrementCounts(self,axis,targetCounts):
@@ -268,12 +305,12 @@ class motors(comm):
         '''GoTo Target increment in StepsCounts. Motors has to be stopped'''
         if not self.params[axis]['countsPerRevolution']:
           return None
-        targetAngle=targetCounts*360/self.params[axis]['countsPerRevolution']
+        targetAngle=self.counts2degrees(targetCounts)
         logging.info(f'AXIS{axis}: Setting goto target INCREMENT to {targetCounts} counts ({targetAngle} deg)')
         #Position values are offseting by 0x800000
-        response=self._send_cmd('H',axis,targetCounts+0x800000)
+        response=self._send_cmd('H',axis,targetCounts+0x800000) # SetGotoTargetIncrement
         #Set Brake Point Increment
-        response=self._send_cmd('M',axis,0x000DAC)
+        response=self._send_cmd('M',axis,0x000DAC)  # SetBreakPointIncrement
         return response
 
     def axis_wait2stop(self,axis):    
@@ -292,7 +329,7 @@ class motors(comm):
           return None
         logging.info(f'AXIS{axis}: Synchronizing actual position to {counts} counts')
         #Position values are offseting by 0x800000
-        response=self._send_cmd('E',axis,counts+0x800000)
+        response=self._send_cmd('E',axis,counts+0x800000) # SetAxisPosition
         return response
 
     def axis_set_goto_target(self,axis,targetDegrees):
@@ -352,7 +389,7 @@ class motors(comm):
         '''Start Goto'''
         if not self.params[axis]['countsPerRevolution']:
           return None
-        response=self._send_cmd('J',axis)
+        response=self._send_cmd('J',axis) # StartMotion
         logging.info(f'AXIS{axis}: Starting motion')
         return response
 
@@ -361,7 +398,7 @@ class motors(comm):
         if not self.params[axis]['countsPerRevolution']:
           return None
         logging.info(f'AXIS{axis}: Stopping')
-        response=self._send_cmd('K',axis)
+        response=self._send_cmd('K',axis) # AxisStop (Not Instant stop), then set to Tracking. 'Ĺ' for hard stop
         if synchronous:
             self.axis_wait2stop(axis)
         else:
@@ -394,7 +431,7 @@ class motors(comm):
         else:
             value=0
         logging.info(f'Auxiliary switch: {on}')
-        response=self._send_cmd('O',1,value,ndigits=1)
+        response=self._send_cmd('O',1,value,ndigits=1)  # SetSwitch
         return response
 
     def set_pos(self,alpha,beta):
@@ -436,10 +473,10 @@ class motors(comm):
         '''Update current status and values
         logaxis can be 1,2,3 or None. 1 for only log current values of axis 1... 
         '''
-        parameterDict={ 'GotoTarget':'h',
-                        'Position':'j',
-                        'StepPeriod':'i',
-                        'Status':'f'
+        parameterDict={ 'GotoTarget':'h', # Inquire Goto Target Position
+                        'Position':'j',   # Inquire Position
+                        'StepPeriod':'i', # Inquire Step Period 
+                        'Status':'f'      \3 Inquire Status 
                         }
         try:
             params=self.get_values(parameterDict)
