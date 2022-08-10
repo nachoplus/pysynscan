@@ -143,8 +143,8 @@ class motors(comm):
         return self.counts2degrees(axis,counts)
 
     def axis_set_pos(self,axis,degrees):
-        '''Syncronize position Degrees.'''
-        logging.info(f'AXIS{axis}: Syncronizing actual position to {degrees} degrees')
+        '''Synchronize position Degrees.'''
+        logging.info(f'AXIS{axis}: Synchronizing actual position to {degrees} degrees')
         counts=self.degrees2counts(axis,degrees)
         response=self.axis_set_posCounts(axis,int(counts))
 
@@ -274,8 +274,8 @@ class motors(comm):
         logging.info(f'AXIS{axis}: Stopped')
 
     def axis_set_posCounts(self,axis,counts):
-        '''Syncronize position Counts.'''
-        logging.info(f'AXIS{axis}: Syncronizing actual position to {counts} counts')
+        '''Synchronize position Counts.'''
+        logging.info(f'AXIS{axis}: Synchronizing actual position to {counts} counts')
         #Position values are offseting by 0x800000
         response=self._send_cmd('E',axis,counts+0x800000)
         return response
@@ -313,7 +313,7 @@ class motors(comm):
         if not stopped:
             if not tracking or (CW and (speed <0)) or (not CW and (speed >0)):
                 logging.info(f'TRACK asked to change dir or mode tracking:{tracking} CW:{CW} speed:{speed}')
-                self.axis_stop_motion(axis,syncronous=True)
+                self.axis_stop_motion(axis,synchronous=True)
                 self.axis_set_motion_mode(axis,True,(speed <0),False)
                 self.axis_set_speed(axis,speed)
                 self.axis_start_motion(axis)
@@ -333,11 +333,11 @@ class motors(comm):
         logging.info(f'AXIS{axis}: Starting motion')
         return response
 
-    def axis_stop_motion(self,axis,syncronous=True):
-        '''Soft stop. If syncronous==True wait to finish'''
+    def axis_stop_motion(self,axis,synchronous=True):
+        '''Soft stop. If synchronous==True wait to finish'''
         logging.info(f'AXIS{axis}: Stopping')
         response=self._send_cmd('K',axis)
-        if syncronous:
+        if synchronous:
             self.axis_wait2stop(axis)
         else:
             logging.info(f'AXIS{axis}: Ask to stop. In progress')
@@ -367,11 +367,11 @@ class motors(comm):
         return response
 
     def set_pos(self,alpha,beta):
-        ''' Syncronize actual position with alpha and beta'''
+        ''' Synchronize actual position with alpha and beta'''
         self.axis_set_pos(1,alpha)
         self.axis_set_pos(2,beta)
 
-    def goto(self,alpha,beta,syncronous=False):
+    def goto(self,alpha,beta,synchronous=False):
         '''GOTO. alpha,beta in degrees'''
         logging.info(f'GOTO axis1={alpha} axis2={beta} degrees')
         angle={}
@@ -385,7 +385,7 @@ class motors(comm):
             self.axis_set_goto_target(axis,angle[axis])
             self.axis_start_motion(axis)
             '''
-        if syncronous:
+        if synchronous:
             for axis in [1,2]:
                 self.axis_wait2stop(axis)
 
