@@ -52,7 +52,7 @@ def stop(host, port,wait):
     smc.axis_stop_motion(2,synchronous=wait)
 
 
-#SHOW
+#WATCH
 @click.command()
 @click.option('--host', type=str, help='Synscan mount IP address', default='192.168.4.1')
 @click.option('--port', type=int, help='Synscan mount port', default=11880)

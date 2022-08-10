@@ -35,7 +35,10 @@
 #      V  Set Polar Scope LED brightness 
 #      W  Extended Setting
 #
-# Tested successfully on Star Adventurer Mini (AXIS1 only), but goto does not stop.
+# Tested successfully on:
+# - SkyWatcher AZ-GTI 
+# - open-synscan
+# - Star Adventurer Mini (AXIS1 only), but goto does not stop.
 #
 # References: (for direct motor control, not via SynScan hand Control V3/V4)
 # https://github.com/skywatcher-pacific/skywatcher_open/wiki/Skywatcher-Protocol
@@ -114,6 +117,7 @@ class motors(comm):
             self._init()
 
     def _degreesPerSecond2T1preset(self,axis,degreesPerSecond):
+        '''Convert degrees per second to T1_preset (StepPeriod)'''
         countsPerSecond=self.degrees2counts(axis,degreesPerSecond)
         TMR_Freq=self.params[axis]['TimerInterruptFreq']
         if abs(countsPerSecond) <=0:
@@ -294,7 +298,7 @@ class motors(comm):
         '''GoTo Target value in StepsCounts. Motors has to be stopped'''
         if not self.params[axis]['countsPerRevolution']:
           return None
-        targetAngle=self.counts2degrees(targetCounts)
+        targetAngle=self.counts2degrees(axis,targetCounts)
         logging.info(f'AXIS{axis}: Setting goto target to {targetCounts} counts ({targetAngle} deg)')
         #Position values are offseting by 0x800000
         response=self._send_cmd('S',axis,targetCounts+0x800000) # SetGotoTarget 
@@ -305,7 +309,7 @@ class motors(comm):
         '''GoTo Target increment in StepsCounts. Motors has to be stopped'''
         if not self.params[axis]['countsPerRevolution']:
           return None
-        targetAngle=self.counts2degrees(targetCounts)
+        targetAngle=self.counts2degrees(axis,targetCounts)
         logging.info(f'AXIS{axis}: Setting goto target INCREMENT to {targetCounts} counts ({targetAngle} deg)')
         #Position values are offseting by 0x800000
         response=self._send_cmd('H',axis,targetCounts+0x800000) # SetGotoTargetIncrement
@@ -314,13 +318,22 @@ class motors(comm):
         return response
 
     def axis_wait2stop(self,axis):    
+        '''Wait for given axis to Stop, or overshoot Target'''
         if not self.params[axis]['countsPerRevolution']:
           return
         logging.info(f'AXIS{axis}: Waiting to stop.')
         self.update_current_values()
+        CW0 = self.values[axis]['Position'] - self.values[axis]['GotoTarget'] # >0 = CW, <0 = CCW 
         while not self.values[axis]['Status']['Stopped']:
             time.sleep(1)
             self.update_current_values()
+            # stop axis if the motor has gone too far, not when axis is Tracking, 
+            CW1 = self.values[axis]['Position'] - self.values[axis]['GotoTarget']
+            if not self.values[axis]['Status']['Tracking']:
+              if CW0*CW1 <= 0: # changed sign = overshot, or wrong direction
+                self.axis_stop_motion(axis)
+              if abs(CW1) > abs(CW0):
+                self.axis_stop_motion_hard(axis)
         logging.info(f'AXIS{axis}: Stopped')
 
     def axis_set_posCounts(self,axis,counts):
@@ -342,6 +355,7 @@ class motors(comm):
         return response
 
     def axis_goto(self,axis,targetDegrees):
+      '''Move given axis to target (goto)'''
       if self.params[axis]['countsPerRevolution']:
         self.axis_stop_motion(axis)
         actualPos=self.axis_get_pos(axis)
@@ -403,6 +417,18 @@ class motors(comm):
             self.axis_wait2stop(axis)
         else:
             logging.info(f'AXIS{axis}: Ask to stop. In progress')
+        return response
+        
+    def axis_stop_motion_hard(self,axis,synchronous=True):
+        '''Hard stop. If synchronous==True wait to finish'''
+        if not self.params[axis]['countsPerRevolution']:
+          return None
+        logging.info(f'AXIS{axis}: Stopping (hard)')
+        response=self._send_cmd('L',axis) # AxisStop (Instant stop)
+        if synchronous:
+            self.axis_wait2stop(axis)
+        else:
+            logging.info(f'AXIS{axis}: Ask to hard stop. In progress')
         return response
 
     #HIGH LEVEL API (arguments in degrees)
@@ -476,7 +502,7 @@ class motors(comm):
         parameterDict={ 'GotoTarget':'h', # Inquire Goto Target Position
                         'Position':'j',   # Inquire Position
                         'StepPeriod':'i', # Inquire Step Period 
-                        'Status':'f'      \3 Inquire Status 
+                        'Status':'f'      # Inquire Status 
                         }
         try:
             params=self.get_values(parameterDict)
@@ -486,15 +512,21 @@ class motors(comm):
         for parameter in ['GotoTarget','Position']:
             for axis in range(1,3):
                 #Position values are offseting by 0x800000
-                params[axis][parameter]=params[axis][parameter]-0x800000
-                if self.params[axis]['countsPerRevolution']:
-                  params[axis][parameter+'Deg']=params[axis][parameter]*360/self.params[axis]['countsPerRevolution']
-                else:
-                  params[axis][parameter+'Deg']=0
+                try:
+                  params[axis][parameter]=params[axis][parameter]-0x800000
+                  if self.params[axis]['countsPerRevolution']:
+                    params[axis][parameter+'Deg']=params[axis][parameter]*360/self.params[axis]['countsPerRevolution']
+                  else:
+                    params[axis][parameter+'Deg']=0
+                except TypeError as error:
+                  logging.warning(error+' '+parameter+'='+str(params[axis][parameter]))
         for axis in range(1,3):
-            params[axis]['Status']=self._decode_status(params[axis]['Status'])
-            if not self.params[axis]['countsPerRevolution']:
-              params[axis]['Status']['Blocked']=True
+            try:
+              params[axis]['Status']=self._decode_status(params[axis]['Status'])
+              if not self.params[axis]['countsPerRevolution']:
+                params[axis]['Status']['Blocked']=True
+            except TypeError as error:
+              logging.warning(error+' Status='+str(params[axis]['Status']))
         self.values=params
         if logaxis==3:
             logging.info(f'{params}')
