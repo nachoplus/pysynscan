@@ -112,7 +112,7 @@ class motors(comm):
             self.params=self.get_parameters()
         except NameError as error:
             logging.warning(error)
-            logging.warning(f'Retriying in {retrySec}..')
+            logging.warning(f'Retrying in {retrySec}...')
             time.sleep(retrySec)
             self._init()
 
@@ -504,29 +504,28 @@ class motors(comm):
                         'StepPeriod':'i', # Inquire Step Period 
                         'Status':'f'      # Inquire Status 
                         }
+        retrySec = 2
         try:
-            params=self.get_values(parameterDict)
-        except NameError as error:
-            logging.warning(error)
-            return {}
-        for parameter in ['GotoTarget','Position']:
-            for axis in range(1,3):
-                #Position values are offseting by 0x800000
-                try:
+          params=self.get_values(parameterDict)
+
+          for parameter in ['GotoTarget','Position']:
+              for axis in range(1,3):
+                  #Position values are offseting by 0x800000
                   params[axis][parameter]=params[axis][parameter]-0x800000
                   if self.params[axis]['countsPerRevolution']:
                     params[axis][parameter+'Deg']=params[axis][parameter]*360/self.params[axis]['countsPerRevolution']
                   else:
                     params[axis][parameter+'Deg']=0
-                except TypeError as error:
-                  logging.warning(error+' '+parameter+'='+str(params[axis][parameter]))
-        for axis in range(1,3):
-            try:
+          for axis in range(1,3):
               params[axis]['Status']=self._decode_status(params[axis]['Status'])
               if not self.params[axis]['countsPerRevolution']:
                 params[axis]['Status']['Blocked']=True
-            except TypeError as error:
-              logging.warning(error+' Status='+str(params[axis]['Status']))
+        except (NameError,KeyError,TypeError) as error:
+            logging.warning(error)
+            logging.warning(f'Retrying in {retrySec}...')
+            time.sleep(retrySec)
+            params = self.update_current_values(logaxis)
+
         self.values=params
         if logaxis==3:
             logging.info(f'{params}')
