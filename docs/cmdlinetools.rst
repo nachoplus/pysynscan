@@ -15,7 +15,7 @@
    :prog: synscanWatch
    :nested: full
 
-.. click:: synscan.scripts.cli:syncronize
+.. click:: synscan.scripts.cli:synchronize
    :prog: synscanSync
    :nested: full
 

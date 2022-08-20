@@ -15,12 +15,12 @@ import os
 @click.argument('azimuth',type=float)
 @click.argument('altitude',type=float)
 def goto(host, port,azimuth,altitude,wait):
-    """Do a GOTO to a target azimuth/altitude"""
+    """Do a GOTO to a target azimuth/altitude. Use '--' before AZIMUTH ALTITUDE with negative values"""
     import synscan
     UDP_IP = os.getenv("SYNSCAN_UDP_IP",host)
     UDP_PORT = int(os.getenv("SYNSCAN_UDP_PORT",port))
     smc=synscan.motors(UDP_IP,UDP_PORT)
-    smc.goto(azimuth,altitude,syncronous=wait)
+    smc.goto(azimuth,altitude,synchronous=wait)
 
 
 #TRACK
@@ -30,7 +30,7 @@ def goto(host, port,azimuth,altitude,wait):
 @click.argument('azimuth_speed',type=float)
 @click.argument('altitude_speed',type=float)
 def track(host, port, azimuth_speed, altitude_speed):
-    """Move at desired speed (degrees per second)"""
+    """Move at desired speed (degrees per second). Use '--' before AZIMUTH ALTITUDE with negative values"""
     import synscan
     UDP_IP = os.getenv("SYNSCAN_UDP_IP",host)
     UDP_PORT = int(os.getenv("SYNSCAN_UDP_PORT",port))
@@ -48,11 +48,11 @@ def stop(host, port,wait):
     UDP_IP = os.getenv("SYNSCAN_UDP_IP",host)
     UDP_PORT = int(os.getenv("SYNSCAN_UDP_PORT",port))
     smc=synscan.motors(UDP_IP,UDP_PORT)
-    smc.axis_stop_motion(1,syncronous=wait)
-    smc.axis_stop_motion(2,syncronous=wait)
+    smc.axis_stop_motion(1,synchronous=wait)
+    smc.axis_stop_motion(2,synchronous=wait)
 
 
-#SHOW
+#WATCH
 @click.command()
 @click.option('--host', type=str, help='Synscan mount IP address', default='192.168.4.1')
 @click.option('--port', type=int, help='Synscan mount port', default=11880)
@@ -77,14 +77,14 @@ def watch(host, port,seconds):
         ))
         time.sleep(seconds)
 
-#SYNCRONIZE
+#SYNCHRONIZE
 @click.command()
 @click.option('--host', type=str, help='Synscan mount IP address', default='192.168.4.1')
 @click.option('--port', type=int, help='Synscan mount port', default=11880)
 @click.argument('azimuth',type=float)
 @click.argument('altitude',type=float)
-def syncronize(host, port,azimuth,altitude):
-    """Syncronize actual position with the azimuth/altitude provided"""
+def synchronize(host, port,azimuth,altitude):
+    """Synchronize actual position with the azimuth/altitude provided. Use '--' before AZIMUTH ALTITUDE with negative values"""
     import synscan
     UDP_IP = os.getenv("SYNSCAN_UDP_IP",host)
     UDP_PORT = int(os.getenv("SYNSCAN_UDP_PORT",port))
