@@ -1,7 +1,7 @@
 #https://geekytheory.com/como-subir-tu-propio-paquete-a-pypi
-tagname='0.1.1'
+tagname='0.1.2'
 git tag --delete ${tagname}
-git tag ${tagname}   -m "First pip candidate"
+git tag ${tagname}   -m "Added open-synscan support"
 git push origin :refs/tags/${tagname}
 git push --tags origin master
 python setup.py sdist upload -r pypi
