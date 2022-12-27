@@ -28,7 +28,7 @@ Also every CLI command has --host and --port parameters. Enviromental vars take 
    :prog: synscanWatch
    :nested: full
 
-.. click:: synscan.scripts.cli:syncronize
+.. click:: synscan.scripts.cli:synchronize
    :prog: synscanSync
    :nested: full
 
