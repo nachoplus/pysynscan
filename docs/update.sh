@@ -2,7 +2,7 @@
 fecha=`date`
 make clean
 cd ../../pysynscandocs
-git clone -b gh-pages --single-branch https://github.com/nachoplus/pysynscan.git html
+git clone -b gh-pages --single-branch git@github.com:nachoplus/pysynscan.git html
 cd ../pysynscan/docs
 make html
 make latexpdf
