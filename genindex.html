@@ -2,23 +2,24 @@
 
 <!doctype html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Index &#8212; pysynscan alpha documentation</title>
-    <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/bizstyle.css" />
     
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <!--[if lt IE 9]>
     <script src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
@@ -63,7 +64,7 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li>
-    --host &lt;host&gt;
+    --host
 
       <ul>
         <li><a href="cmdlinetools.html#cmdoption-synscanGoto-host">synscanGoto command line option</a>
@@ -80,7 +81,7 @@
 </li>
       </ul></li>
       <li>
-    --port &lt;port&gt;
+    --port
 
       <ul>
         <li><a href="cmdlinetools.html#cmdoption-synscanGoto-port">synscanGoto command line option</a>
@@ -99,7 +100,7 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li>
-    --seconds &lt;seconds&gt;
+    --seconds
 
       <ul>
         <li><a href="cmdlinetools.html#cmdoption-synscanSwitch-seconds">synscanSwitch command line option</a>
@@ -108,7 +109,7 @@
 </li>
       </ul></li>
       <li>
-    --wait &lt;wait&gt;
+    --wait
 
       <ul>
         <li><a href="cmdlinetools.html#cmdoption-synscanGoto-wait">synscanGoto command line option</a>
@@ -160,16 +161,18 @@
 </li>
       <li><a href="api.html#synscan.motors.motors.axis_get_posCounts">axis_get_posCounts() (synscan.motors.motors method)</a>
 </li>
+      <li><a href="api.html#synscan.motors.motors.axis_goto">axis_goto() (synscan.motors.motors method)</a>
+</li>
       <li><a href="api.html#synscan.motors.motors.axis_set_goto_target">axis_set_goto_target() (synscan.motors.motors method)</a>
 </li>
       <li><a href="api.html#synscan.motors.motors.axis_set_goto_targetCounts">axis_set_goto_targetCounts() (synscan.motors.motors method)</a>
 </li>
       <li><a href="api.html#synscan.motors.motors.axis_set_goto_targetIncrementCounts">axis_set_goto_targetIncrementCounts() (synscan.motors.motors method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#synscan.motors.motors.axis_set_motion_mode">axis_set_motion_mode() (synscan.motors.motors method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api.html#synscan.motors.motors.axis_set_pos">axis_set_pos() (synscan.motors.motors method)</a>
 </li>
       <li><a href="api.html#synscan.motors.motors.axis_set_posCounts">axis_set_posCounts() (synscan.motors.motors method)</a>
@@ -179,6 +182,10 @@
       <li><a href="api.html#synscan.motors.motors.axis_start_motion">axis_start_motion() (synscan.motors.motors method)</a>
 </li>
       <li><a href="api.html#synscan.motors.motors.axis_stop_motion">axis_stop_motion() (synscan.motors.motors method)</a>
+</li>
+      <li><a href="api.html#synscan.motors.motors.axis_stop_motion_hard">axis_stop_motion_hard() (synscan.motors.motors method)</a>
+</li>
+      <li><a href="api.html#synscan.motors.motors.axis_wait2stop">axis_wait2stop() (synscan.motors.motors method)</a>
 </li>
       <li>
     AZIMUTH
@@ -290,11 +297,11 @@
     synscanGoto command line option
 
       <ul>
-        <li><a href="cmdlinetools.html#cmdoption-synscanGoto-host">--host &lt;host&gt;</a>
+        <li><a href="cmdlinetools.html#cmdoption-synscanGoto-host">--host</a>
 </li>
-        <li><a href="cmdlinetools.html#cmdoption-synscanGoto-port">--port &lt;port&gt;</a>
+        <li><a href="cmdlinetools.html#cmdoption-synscanGoto-port">--port</a>
 </li>
-        <li><a href="cmdlinetools.html#cmdoption-synscanGoto-wait">--wait &lt;wait&gt;</a>
+        <li><a href="cmdlinetools.html#cmdoption-synscanGoto-wait">--wait</a>
 </li>
         <li><a href="cmdlinetools.html#cmdoption-synscanGoto-arg-ALTITUDE">ALTITUDE</a>
 </li>
@@ -305,22 +312,22 @@
     synscanStop command line option
 
       <ul>
-        <li><a href="cmdlinetools.html#cmdoption-synscanStop-host">--host &lt;host&gt;</a>
+        <li><a href="cmdlinetools.html#cmdoption-synscanStop-host">--host</a>
 </li>
-        <li><a href="cmdlinetools.html#cmdoption-synscanStop-port">--port &lt;port&gt;</a>
+        <li><a href="cmdlinetools.html#cmdoption-synscanStop-port">--port</a>
 </li>
-        <li><a href="cmdlinetools.html#cmdoption-synscanStop-wait">--wait &lt;wait&gt;</a>
+        <li><a href="cmdlinetools.html#cmdoption-synscanStop-wait">--wait</a>
 </li>
       </ul></li>
       <li>
     synscanSwitch command line option
 
       <ul>
-        <li><a href="cmdlinetools.html#cmdoption-synscanSwitch-host">--host &lt;host&gt;</a>
+        <li><a href="cmdlinetools.html#cmdoption-synscanSwitch-host">--host</a>
 </li>
-        <li><a href="cmdlinetools.html#cmdoption-synscanSwitch-port">--port &lt;port&gt;</a>
+        <li><a href="cmdlinetools.html#cmdoption-synscanSwitch-port">--port</a>
 </li>
-        <li><a href="cmdlinetools.html#cmdoption-synscanSwitch-seconds">--seconds &lt;seconds&gt;</a>
+        <li><a href="cmdlinetools.html#cmdoption-synscanSwitch-seconds">--seconds</a>
 </li>
         <li><a href="cmdlinetools.html#cmdoption-synscanSwitch-arg-ON">ON</a>
 </li>
@@ -331,9 +338,9 @@
     synscanSync command line option
 
       <ul>
-        <li><a href="cmdlinetools.html#cmdoption-synscanSync-host">--host &lt;host&gt;</a>
+        <li><a href="cmdlinetools.html#cmdoption-synscanSync-host">--host</a>
 </li>
-        <li><a href="cmdlinetools.html#cmdoption-synscanSync-port">--port &lt;port&gt;</a>
+        <li><a href="cmdlinetools.html#cmdoption-synscanSync-port">--port</a>
 </li>
         <li><a href="cmdlinetools.html#cmdoption-synscanSync-arg-ALTITUDE">ALTITUDE</a>
 </li>
@@ -344,9 +351,9 @@
     synscanTrack command line option
 
       <ul>
-        <li><a href="cmdlinetools.html#cmdoption-synscanTrack-host">--host &lt;host&gt;</a>
+        <li><a href="cmdlinetools.html#cmdoption-synscanTrack-host">--host</a>
 </li>
-        <li><a href="cmdlinetools.html#cmdoption-synscanTrack-port">--port &lt;port&gt;</a>
+        <li><a href="cmdlinetools.html#cmdoption-synscanTrack-port">--port</a>
 </li>
         <li><a href="cmdlinetools.html#cmdoption-synscanTrack-arg-ALTITUDE_SPEED">ALTITUDE_SPEED</a>
 </li>
@@ -357,11 +364,11 @@
     synscanWatch command line option
 
       <ul>
-        <li><a href="cmdlinetools.html#cmdoption-synscanWatch-host">--host &lt;host&gt;</a>
+        <li><a href="cmdlinetools.html#cmdoption-synscanWatch-host">--host</a>
 </li>
-        <li><a href="cmdlinetools.html#cmdoption-synscanWatch-port">--port &lt;port&gt;</a>
+        <li><a href="cmdlinetools.html#cmdoption-synscanWatch-port">--port</a>
 </li>
-        <li><a href="cmdlinetools.html#cmdoption-synscanWatch-seconds">--seconds &lt;seconds&gt;</a>
+        <li><a href="cmdlinetools.html#cmdoption-synscanWatch-seconds">--seconds</a>
 </li>
       </ul></li>
   </ul></td>
@@ -395,12 +402,12 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -420,7 +427,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2020, Nacho Mas.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
     </div>
   </body>
 </html>

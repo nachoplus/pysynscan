@@ -2,25 +2,27 @@
 
 <!doctype html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Simple goto &#8212; pysynscan alpha documentation</title>
-    <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/bizstyle.css" />
     
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="synscanGoto" href="cmdlinetools.html" />
     <link rel="prev" title="Welcome to pysynscan’s documentation!" href="index.html" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <!--[if lt IE 9]>
     <script src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
@@ -51,25 +53,25 @@
           <div class="body" role="main">
             
   <p>The code of this examples are in example dir</p>
-<div class="section" id="simple-goto">
-<h1>Simple goto<a class="headerlink" href="#simple-goto" title="Permalink to this headline">¶</a></h1>
-<p>Simple example that syncronize mount actual position to 0,0 and move forward and bacskwards and small angle</p>
+<section id="simple-goto">
+<h1>Simple goto<a class="headerlink" href="#simple-goto" title="Permalink to this heading">¶</a></h1>
+<p>Simple example that synchronize mount actual position to 0,0 and move forward and bacskwards and small angle</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">synscan</span>
 
 <span class="sd">&#39;&#39;&#39;Goto example&#39;&#39;&#39;</span>
 <span class="n">smc</span><span class="o">=</span><span class="n">synscan</span><span class="o">.</span><span class="n">motors</span><span class="p">()</span>
-<span class="c1">#Syncronize mount actual position to (0,0)</span>
+<span class="c1">#Synchronize mount actual position to (0,0)</span>
 <span class="n">smc</span><span class="o">.</span><span class="n">set_pos</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
 <span class="c1">#Move forward and wait to finish</span>
-<span class="n">smc</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="n">syncronous</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">smc</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="n">synchronous</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="c1">#Return to original position and exit without wait</span>
-<span class="n">smc</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">syncronous</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">smc</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="n">synchronous</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 </pre></div>
 </div>
-</div>
-<div class="section" id="variable-speed-track">
-<h1>Variable speed track<a class="headerlink" href="#variable-speed-track" title="Permalink to this headline">¶</a></h1>
+</section>
+<section id="variable-speed-track">
+<h1>Variable speed track<a class="headerlink" href="#variable-speed-track" title="Permalink to this heading">¶</a></h1>
 <p>This example shows speed ramping</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">synscan</span>
 <span class="kn">import</span> <span class="nn">time</span>
@@ -80,28 +82,28 @@
 <span class="c1">#FORWARD</span>
 <span class="c1">#RAMP UP</span>
 <span class="k">for</span> <span class="n">speed</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span><span class="mi">1</span><span class="p">):</span>
-    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="o">.</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">.1</span><span class="p">)</span>
     <span class="n">smc</span><span class="o">.</span><span class="n">axis_track</span><span class="p">(</span><span class="n">AXIS</span><span class="p">,</span><span class="n">speed</span><span class="o">/</span><span class="mi">10</span><span class="p">)</span>
 <span class="c1">#RAMP DOWN</span>
 <span class="k">for</span> <span class="n">speed</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
-    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="o">.</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">.1</span><span class="p">)</span>
     <span class="n">smc</span><span class="o">.</span><span class="n">axis_track</span><span class="p">(</span><span class="n">AXIS</span><span class="p">,</span><span class="n">speed</span><span class="o">/</span><span class="mi">10</span><span class="p">)</span>
 
 <span class="c1">#BACKWARDS</span>
 <span class="c1">#RAMP UP</span>
 <span class="k">for</span> <span class="n">speed</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span><span class="mi">1</span><span class="p">):</span>
-    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="o">.</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">.1</span><span class="p">)</span>
     <span class="n">smc</span><span class="o">.</span><span class="n">axis_track</span><span class="p">(</span><span class="n">AXIS</span><span class="p">,</span><span class="o">-</span><span class="n">speed</span><span class="o">/</span><span class="mi">10</span><span class="p">)</span>
 <span class="c1">#RAMP DOWN</span>
 <span class="k">for</span> <span class="n">speed</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
-    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="o">.</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">.1</span><span class="p">)</span>
     <span class="n">smc</span><span class="o">.</span><span class="n">axis_track</span><span class="p">(</span><span class="n">AXIS</span><span class="p">,</span><span class="o">-</span><span class="n">speed</span><span class="o">/</span><span class="mi">10</span><span class="p">)</span>
 
 </pre></div>
 </div>
-</div>
-<div class="section" id="panorama-tool">
-<h1>Panorama tool<a class="headerlink" href="#panorama-tool" title="Permalink to this headline">¶</a></h1>
+</section>
+<section id="panorama-tool">
+<h1>Panorama tool<a class="headerlink" href="#panorama-tool" title="Permalink to this heading">¶</a></h1>
 <p>This example shows how to walk a grid of space points. Also howto activate mount’s auxiliary switch to take a picture</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">synscan</span>
@@ -114,13 +116,13 @@
 <span class="c1">#define a grid and walk over his points</span>
 <span class="k">for</span> <span class="n">az</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">180</span><span class="p">,</span><span class="mi">30</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">alt</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">90</span><span class="p">,</span><span class="mi">30</span><span class="p">):</span>
-        <span class="n">smc</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">az</span><span class="p">,</span><span class="n">alt</span><span class="p">,</span><span class="n">syncronous</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>    <span class="c1">#Goto and wait to finish</span>
+        <span class="n">smc</span><span class="o">.</span><span class="n">goto</span><span class="p">(</span><span class="n">az</span><span class="p">,</span><span class="n">alt</span><span class="p">,</span><span class="n">synchronous</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>    <span class="c1">#Goto and wait to finish</span>
         <span class="n">smc</span><span class="o">.</span><span class="n">set_switch</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>                <span class="c1">#Activate camera with the integrate switch</span>
         <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
         <span class="n">smc</span><span class="o">.</span><span class="n">set_switch</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
+</section>
 
 
             <div class="clearer"></div>
@@ -129,19 +131,25 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
-  <ul>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
 <li><a class="reference internal" href="#">Simple goto</a></li>
 <li><a class="reference internal" href="#variable-speed-track">Variable speed track</a></li>
 <li><a class="reference internal" href="#panorama-tool">Panorama tool</a></li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="index.html"
-                        title="previous chapter">Welcome to pysynscan’s documentation!</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="cmdlinetools.html"
-                        title="next chapter">synscanGoto</a></p>
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="index.html"
+                          title="previous chapter">Welcome to pysynscan’s documentation!</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="cmdlinetools.html"
+                          title="next chapter">synscanGoto</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -153,12 +161,12 @@
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -184,7 +192,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2020, Nacho Mas.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
     </div>
   </body>
 </html>

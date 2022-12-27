@@ -2,7 +2,7 @@ The code of this examples are in example dir
 
 Simple goto
 -----------
-Simple example that syncronize mount actual position to 0,0 and move forward and bacskwards and small angle
+Simple example that synchronize mount actual position to 0,0 and move forward and bacskwards and small angle
 
 .. literalinclude:: ../examples/simplegoto.py
    :language: python

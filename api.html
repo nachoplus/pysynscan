@@ -2,24 +2,26 @@
 
 <!doctype html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>motors module &#8212; pysynscan alpha documentation</title>
-    <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/bizstyle.css" />
     
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="prev" title="synscanGoto" href="cmdlinetools.html" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <!--[if lt IE 9]>
     <script src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
@@ -46,13 +48,13 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="motors-module">
-<h1>motors module<a class="headerlink" href="#motors-module" title="Permalink to this headline">¶</a></h1>
+  <section id="motors-module">
+<h1>motors module<a class="headerlink" href="#motors-module" title="Permalink to this heading">¶</a></h1>
 <p>This is the most basic driver. It implement goto and track features in alpha/beta axis. It can be consider as AltAz mount but without aligment routines.</p>
 <span class="target" id="module-synscan.motors"></span><dl class="py class">
-<dt id="synscan.motors.motors">
-<em class="property">class </em><code class="sig-prename descclassname">synscan.motors.</code><code class="sig-name descname">motors</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">udp_ip</span><span class="o">=</span><span class="default_value">'192.168.5.1'</span></em>, <em class="sig-param"><span class="n">udp_port</span><span class="o">=</span><span class="default_value">11880</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#synscan.motors.motors" title="Permalink to this definition">¶</a></dt>
-<dd><p>Implementation of all motor commands and logic
+<dt class="sig sig-object py" id="synscan.motors.motors">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">synscan.motors.</span></span><span class="sig-name descname"><span class="pre">motors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">udp_ip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'192.168.4.1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">udp_port</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">11880</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#synscan.motors.motors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implementation of motor commands and logic
 following the document:
 <a class="reference external" href="https://inter-static.skywatcher.com/downloads/skywatcher_motor_controller_command_set.pdf">https://inter-static.skywatcher.com/downloads/skywatcher_motor_controller_command_set.pdf</a></p>
 <p><strong>IMPORTANT NOTES</strong> (based on the above doc):</p>
@@ -85,38 +87,44 @@ For a Speed mode slewing, send “Stop” command to end the session.</p></li>
 <p>Generally, the motor controller returns to “Speed Mode” when the motor stops automatically.</p>
 <p><strong>NOTE:</strong> Methods begining with axis prefix act only onto selected axis.</p>
 <dl class="py method">
-<dt id="synscan.motors.motors.axis_get_pos">
-<code class="sig-name descname">axis_get_pos</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.axis_get_pos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#synscan.motors.motors.axis_get_pos" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="synscan.motors.motors.axis_get_pos">
+<span class="sig-name descname"><span class="pre">axis_get_pos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.axis_get_pos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#synscan.motors.motors.axis_get_pos" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get actual position in Degrees.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="synscan.motors.motors.axis_get_posCounts">
-<code class="sig-name descname">axis_get_posCounts</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.axis_get_posCounts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#synscan.motors.motors.axis_get_posCounts" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get actual postion in StepsCounts.</p>
+<dt class="sig sig-object py" id="synscan.motors.motors.axis_get_posCounts">
+<span class="sig-name descname"><span class="pre">axis_get_posCounts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.axis_get_posCounts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#synscan.motors.motors.axis_get_posCounts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get actual position in StepsCounts.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="synscan.motors.motors.axis_set_goto_target">
-<code class="sig-name descname">axis_set_goto_target</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span></em>, <em class="sig-param"><span class="n">targetDegrees</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.axis_set_goto_target"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#synscan.motors.motors.axis_set_goto_target" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="synscan.motors.motors.axis_goto">
+<span class="sig-name descname"><span class="pre">axis_goto</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targetDegrees</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.axis_goto"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#synscan.motors.motors.axis_goto" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move given axis to target (goto)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="synscan.motors.motors.axis_set_goto_target">
+<span class="sig-name descname"><span class="pre">axis_set_goto_target</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targetDegrees</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.axis_set_goto_target"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#synscan.motors.motors.axis_set_goto_target" title="Permalink to this definition">¶</a></dt>
 <dd><p>GoTo Target value in Degrees. Motors has to be stopped</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="synscan.motors.motors.axis_set_goto_targetCounts">
-<code class="sig-name descname">axis_set_goto_targetCounts</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span></em>, <em class="sig-param"><span class="n">targetCounts</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.axis_set_goto_targetCounts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#synscan.motors.motors.axis_set_goto_targetCounts" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="synscan.motors.motors.axis_set_goto_targetCounts">
+<span class="sig-name descname"><span class="pre">axis_set_goto_targetCounts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targetCounts</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.axis_set_goto_targetCounts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#synscan.motors.motors.axis_set_goto_targetCounts" title="Permalink to this definition">¶</a></dt>
 <dd><p>GoTo Target value in StepsCounts. Motors has to be stopped</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="synscan.motors.motors.axis_set_goto_targetIncrementCounts">
-<code class="sig-name descname">axis_set_goto_targetIncrementCounts</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span></em>, <em class="sig-param"><span class="n">targetCounts</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.axis_set_goto_targetIncrementCounts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#synscan.motors.motors.axis_set_goto_targetIncrementCounts" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="synscan.motors.motors.axis_set_goto_targetIncrementCounts">
+<span class="sig-name descname"><span class="pre">axis_set_goto_targetIncrementCounts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">targetCounts</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.axis_set_goto_targetIncrementCounts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#synscan.motors.motors.axis_set_goto_targetIncrementCounts" title="Permalink to this definition">¶</a></dt>
 <dd><p>GoTo Target increment in StepsCounts. Motors has to be stopped</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="synscan.motors.motors.axis_set_motion_mode">
-<code class="sig-name descname">axis_set_motion_mode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span></em>, <em class="sig-param"><span class="n">Tracking</span></em>, <em class="sig-param"><span class="n">CW</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">fastSpeed</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.axis_set_motion_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#synscan.motors.motors.axis_set_motion_mode" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="synscan.motors.motors.axis_set_motion_mode">
+<span class="sig-name descname"><span class="pre">axis_set_motion_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Tracking</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">CW</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fastSpeed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.axis_set_motion_mode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#synscan.motors.motors.axis_set_motion_mode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set Motion Mode.</p>
 <p>NOTE: Channel will always be set to Tracking Mode after stopped</p>
 <p>Motion mode msg is 1byte msg (2 HEX digits)</p>
@@ -144,50 +152,62 @@ For a Speed mode slewing, send “Stop” command to end the session.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="synscan.motors.motors.axis_set_pos">
-<code class="sig-name descname">axis_set_pos</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span></em>, <em class="sig-param"><span class="n">degrees</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.axis_set_pos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#synscan.motors.motors.axis_set_pos" title="Permalink to this definition">¶</a></dt>
-<dd><p>Syncronize position Degrees.</p>
+<dt class="sig sig-object py" id="synscan.motors.motors.axis_set_pos">
+<span class="sig-name descname"><span class="pre">axis_set_pos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.axis_set_pos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#synscan.motors.motors.axis_set_pos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Synchronize position Degrees.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="synscan.motors.motors.axis_set_posCounts">
-<code class="sig-name descname">axis_set_posCounts</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span></em>, <em class="sig-param"><span class="n">counts</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.axis_set_posCounts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#synscan.motors.motors.axis_set_posCounts" title="Permalink to this definition">¶</a></dt>
-<dd><p>Syncronize position Counts.</p>
+<dt class="sig sig-object py" id="synscan.motors.motors.axis_set_posCounts">
+<span class="sig-name descname"><span class="pre">axis_set_posCounts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">counts</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.axis_set_posCounts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#synscan.motors.motors.axis_set_posCounts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Synchronize position Counts.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="synscan.motors.motors.axis_set_speed">
-<code class="sig-name descname">axis_set_speed</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span></em>, <em class="sig-param"><span class="n">degreesPerSecond</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.axis_set_speed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#synscan.motors.motors.axis_set_speed" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="synscan.motors.motors.axis_set_speed">
+<span class="sig-name descname"><span class="pre">axis_set_speed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degreesPerSecond</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.axis_set_speed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#synscan.motors.motors.axis_set_speed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the tracking speed in degreesPerSecond</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="synscan.motors.motors.axis_start_motion">
-<code class="sig-name descname">axis_start_motion</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.axis_start_motion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#synscan.motors.motors.axis_start_motion" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="synscan.motors.motors.axis_start_motion">
+<span class="sig-name descname"><span class="pre">axis_start_motion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.axis_start_motion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#synscan.motors.motors.axis_start_motion" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start Goto</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="synscan.motors.motors.axis_stop_motion">
-<code class="sig-name descname">axis_stop_motion</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span></em>, <em class="sig-param"><span class="n">syncronous</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.axis_stop_motion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#synscan.motors.motors.axis_stop_motion" title="Permalink to this definition">¶</a></dt>
-<dd><p>Soft stop. If syncronous==True wait to finish</p>
+<dt class="sig sig-object py" id="synscan.motors.motors.axis_stop_motion">
+<span class="sig-name descname"><span class="pre">axis_stop_motion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">synchronous</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.axis_stop_motion"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#synscan.motors.motors.axis_stop_motion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Soft stop. If synchronous==True wait to finish</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="synscan.motors.motors.counts2degrees">
-<code class="sig-name descname">counts2degrees</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span></em>, <em class="sig-param"><span class="n">counts</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.counts2degrees"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#synscan.motors.motors.counts2degrees" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="synscan.motors.motors.axis_stop_motion_hard">
+<span class="sig-name descname"><span class="pre">axis_stop_motion_hard</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">synchronous</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.axis_stop_motion_hard"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#synscan.motors.motors.axis_stop_motion_hard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hard stop. If synchronous==True wait to finish</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="synscan.motors.motors.axis_wait2stop">
+<span class="sig-name descname"><span class="pre">axis_wait2stop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.axis_wait2stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#synscan.motors.motors.axis_wait2stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wait for given axis to Stop, or overshoot Target</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="synscan.motors.motors.counts2degrees">
+<span class="sig-name descname"><span class="pre">counts2degrees</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">counts</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.counts2degrees"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#synscan.motors.motors.counts2degrees" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return position or speed in degrees for a given counts or counts/seconds value</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="synscan.motors.motors.degrees2counts">
-<code class="sig-name descname">degrees2counts</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span></em>, <em class="sig-param"><span class="n">degrees</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.degrees2counts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#synscan.motors.motors.degrees2counts" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="synscan.motors.motors.degrees2counts">
+<span class="sig-name descname"><span class="pre">degrees2counts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.degrees2counts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#synscan.motors.motors.degrees2counts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return position or speed in counts for a given deg or deg/seconds value</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="synscan.motors.motors.get_parameters">
-<code class="sig-name descname">get_parameters</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.get_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#synscan.motors.motors.get_parameters" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="synscan.motors.motors.get_parameters">
+<span class="sig-name descname"><span class="pre">get_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.get_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#synscan.motors.motors.get_parameters" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get main motor parameters.
 Some of this parameters are needed for all calculations 
 so they have to be available to the rest of the code</p>
@@ -204,58 +224,58 @@ so they have to be available to the rest of the code</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="synscan.motors.motors.get_values">
-<code class="sig-name descname">get_values</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parameterDict</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.get_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#synscan.motors.motors.get_values" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="synscan.motors.motors.get_values">
+<span class="sig-name descname"><span class="pre">get_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameterDict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.get_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#synscan.motors.motors.get_values" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send all cmd in the parameterDict for both axis and return
 a dictionary with the values.</p>
 <p>Used by get_parameters and update_current_values functions</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="synscan.motors.motors.goto">
-<code class="sig-name descname">goto</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">alpha</span></em>, <em class="sig-param"><span class="n">beta</span></em>, <em class="sig-param"><span class="n">syncronous</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.goto"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#synscan.motors.motors.goto" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="synscan.motors.motors.goto">
+<span class="sig-name descname"><span class="pre">goto</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">synchronous</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.goto"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#synscan.motors.motors.goto" title="Permalink to this definition">¶</a></dt>
 <dd><p>GOTO. alpha,beta in degrees</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="synscan.motors.motors.set_pos">
-<code class="sig-name descname">set_pos</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">alpha</span></em>, <em class="sig-param"><span class="n">beta</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.set_pos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#synscan.motors.motors.set_pos" title="Permalink to this definition">¶</a></dt>
-<dd><p>Syncronize actual position with alpha and beta</p>
+<dt class="sig sig-object py" id="synscan.motors.motors.set_pos">
+<span class="sig-name descname"><span class="pre">set_pos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.set_pos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#synscan.motors.motors.set_pos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Synchronize actual position with alpha and beta</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="synscan.motors.motors.set_switch">
-<code class="sig-name descname">set_switch</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">on</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.set_switch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#synscan.motors.motors.set_switch" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="synscan.motors.motors.set_switch">
+<span class="sig-name descname"><span class="pre">set_switch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">on</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.set_switch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#synscan.motors.motors.set_switch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Switch on/off auxiliary switch</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="synscan.motors.motors.track">
-<code class="sig-name descname">track</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">alpha</span></em>, <em class="sig-param"><span class="n">beta</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.track"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#synscan.motors.motors.track" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="synscan.motors.motors.track">
+<span class="sig-name descname"><span class="pre">track</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.track"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#synscan.motors.motors.track" title="Permalink to this definition">¶</a></dt>
 <dd><p>GOTO. alpha,beta in degrees per second</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="synscan.motors.motors.update_current_values">
-<code class="sig-name descname">update_current_values</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">logaxis</span><span class="o">=</span><span class="default_value">2</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.update_current_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#synscan.motors.motors.update_current_values" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="synscan.motors.motors.update_current_values">
+<span class="sig-name descname"><span class="pre">update_current_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">logaxis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/motors.html#motors.update_current_values"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#synscan.motors.motors.update_current_values" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update current status and values
 logaxis can be 1,2,3 or None. 1 for only log current values of axis 1…</p>
 </dd></dl>
 
 </dd></dl>
 
-</div>
-<div class="section" id="comm-module">
-<h1>comm module<a class="headerlink" href="#comm-module" title="Permalink to this headline">¶</a></h1>
+</section>
+<section id="comm-module">
+<h1>comm module<a class="headerlink" href="#comm-module" title="Permalink to this heading">¶</a></h1>
 <p>Module to manage UDP comunications. It should not be used by user but by the others drivers.</p>
 <span class="target" id="module-synscan.comm"></span><dl class="py class">
-<dt id="synscan.comm.comm">
-<em class="property">class </em><code class="sig-prename descclassname">synscan.comm.</code><code class="sig-name descname">comm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">udp_ip</span><span class="o">=</span><span class="default_value">'192.168.5.1'</span></em>, <em class="sig-param"><span class="n">udp_port</span><span class="o">=</span><span class="default_value">11880</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/comm.html#comm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#synscan.comm.comm" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="synscan.comm.comm">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">synscan.comm.</span></span><span class="sig-name descname"><span class="pre">comm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">udp_ip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'192.168.4.1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">udp_port</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">11880</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/comm.html#comm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#synscan.comm.comm" title="Permalink to this definition">¶</a></dt>
 <dd><p>UDP Comunication module.
 Virtual. Used as base class. All members are protected</p>
 <dl class="py method">
-<dt id="synscan.comm.comm._hex2int">
-<code class="sig-name descname">_hex2int</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/comm.html#comm._hex2int"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#synscan.comm.comm._hex2int" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="synscan.comm.comm._hex2int">
+<span class="sig-name descname"><span class="pre">_hex2int</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/comm.html#comm._hex2int"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#synscan.comm.comm._hex2int" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Convert data recived from motors following </dt><dd><p>Synscan Motor Protocol rules</p>
 </dd>
@@ -271,8 +291,8 @@ response, it is sent/received in this order: “1” “2”.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="synscan.comm.comm._int2hex">
-<code class="sig-name descname">_int2hex</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">ndigits</span><span class="o">=</span><span class="default_value">6</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/comm.html#comm._int2hex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#synscan.comm.comm._int2hex" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="synscan.comm.comm._int2hex">
+<span class="sig-name descname"><span class="pre">_int2hex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ndigits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">6</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/comm.html#comm._int2hex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#synscan.comm.comm._int2hex" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="simple">
 <dt>Convert data prior to send to the motors following </dt><dd><p>Synscan Motor Protocol rules</p>
 </dd>
@@ -288,26 +308,26 @@ response, it is sent/received in this order: “1” “2”.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="synscan.comm.comm._send_cmd">
-<code class="sig-name descname">_send_cmd</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cmd</span></em>, <em class="sig-param"><span class="n">axis</span></em>, <em class="sig-param"><span class="n">data</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ndigits</span><span class="o">=</span><span class="default_value">6</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/comm.html#comm._send_cmd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#synscan.comm.comm._send_cmd" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="synscan.comm.comm._send_cmd">
+<span class="sig-name descname"><span class="pre">_send_cmd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cmd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ndigits</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">6</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/comm.html#comm._send_cmd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#synscan.comm.comm._send_cmd" title="Permalink to this definition">¶</a></dt>
 <dd><p>Command function</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="synscan.comm.comm._send_raw_cmd">
-<code class="sig-name descname">_send_raw_cmd</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cmd</span></em>, <em class="sig-param"><span class="n">timeout_in_seconds</span><span class="o">=</span><span class="default_value">2</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/comm.html#comm._send_raw_cmd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#synscan.comm.comm._send_raw_cmd" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="synscan.comm.comm._send_raw_cmd">
+<span class="sig-name descname"><span class="pre">_send_raw_cmd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cmd</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout_in_seconds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/comm.html#comm._send_raw_cmd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#synscan.comm.comm._send_raw_cmd" title="Permalink to this definition">¶</a></dt>
 <dd><p>Low level send command function</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="synscan.comm.comm._test_comm">
-<code class="sig-name descname">_test_comm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/comm.html#comm._test_comm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#synscan.comm.comm._test_comm" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="synscan.comm.comm._test_comm">
+<span class="sig-name descname"><span class="pre">_test_comm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/synscan/comm.html#comm._test_comm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#synscan.comm.comm._test_comm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Control msg to check comms</p>
 </dd></dl>
 
 </dd></dl>
 
-</div>
+</section>
 
 
             <div class="clearer"></div>
@@ -316,15 +336,57 @@ response, it is sent/received in this order: “1” “2”.</p></li>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">motors module</a></li>
-<li><a class="reference internal" href="#comm-module">comm module</a></li>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">motors module</a><ul>
+<li><a class="reference internal" href="#synscan.motors.motors"><code class="docutils literal notranslate"><span class="pre">motors</span></code></a><ul>
+<li><a class="reference internal" href="#synscan.motors.motors.axis_get_pos"><code class="docutils literal notranslate"><span class="pre">motors.axis_get_pos()</span></code></a></li>
+<li><a class="reference internal" href="#synscan.motors.motors.axis_get_posCounts"><code class="docutils literal notranslate"><span class="pre">motors.axis_get_posCounts()</span></code></a></li>
+<li><a class="reference internal" href="#synscan.motors.motors.axis_goto"><code class="docutils literal notranslate"><span class="pre">motors.axis_goto()</span></code></a></li>
+<li><a class="reference internal" href="#synscan.motors.motors.axis_set_goto_target"><code class="docutils literal notranslate"><span class="pre">motors.axis_set_goto_target()</span></code></a></li>
+<li><a class="reference internal" href="#synscan.motors.motors.axis_set_goto_targetCounts"><code class="docutils literal notranslate"><span class="pre">motors.axis_set_goto_targetCounts()</span></code></a></li>
+<li><a class="reference internal" href="#synscan.motors.motors.axis_set_goto_targetIncrementCounts"><code class="docutils literal notranslate"><span class="pre">motors.axis_set_goto_targetIncrementCounts()</span></code></a></li>
+<li><a class="reference internal" href="#synscan.motors.motors.axis_set_motion_mode"><code class="docutils literal notranslate"><span class="pre">motors.axis_set_motion_mode()</span></code></a></li>
+<li><a class="reference internal" href="#synscan.motors.motors.axis_set_pos"><code class="docutils literal notranslate"><span class="pre">motors.axis_set_pos()</span></code></a></li>
+<li><a class="reference internal" href="#synscan.motors.motors.axis_set_posCounts"><code class="docutils literal notranslate"><span class="pre">motors.axis_set_posCounts()</span></code></a></li>
+<li><a class="reference internal" href="#synscan.motors.motors.axis_set_speed"><code class="docutils literal notranslate"><span class="pre">motors.axis_set_speed()</span></code></a></li>
+<li><a class="reference internal" href="#synscan.motors.motors.axis_start_motion"><code class="docutils literal notranslate"><span class="pre">motors.axis_start_motion()</span></code></a></li>
+<li><a class="reference internal" href="#synscan.motors.motors.axis_stop_motion"><code class="docutils literal notranslate"><span class="pre">motors.axis_stop_motion()</span></code></a></li>
+<li><a class="reference internal" href="#synscan.motors.motors.axis_stop_motion_hard"><code class="docutils literal notranslate"><span class="pre">motors.axis_stop_motion_hard()</span></code></a></li>
+<li><a class="reference internal" href="#synscan.motors.motors.axis_wait2stop"><code class="docutils literal notranslate"><span class="pre">motors.axis_wait2stop()</span></code></a></li>
+<li><a class="reference internal" href="#synscan.motors.motors.counts2degrees"><code class="docutils literal notranslate"><span class="pre">motors.counts2degrees()</span></code></a></li>
+<li><a class="reference internal" href="#synscan.motors.motors.degrees2counts"><code class="docutils literal notranslate"><span class="pre">motors.degrees2counts()</span></code></a></li>
+<li><a class="reference internal" href="#synscan.motors.motors.get_parameters"><code class="docutils literal notranslate"><span class="pre">motors.get_parameters()</span></code></a></li>
+<li><a class="reference internal" href="#synscan.motors.motors.get_values"><code class="docutils literal notranslate"><span class="pre">motors.get_values()</span></code></a></li>
+<li><a class="reference internal" href="#synscan.motors.motors.goto"><code class="docutils literal notranslate"><span class="pre">motors.goto()</span></code></a></li>
+<li><a class="reference internal" href="#synscan.motors.motors.set_pos"><code class="docutils literal notranslate"><span class="pre">motors.set_pos()</span></code></a></li>
+<li><a class="reference internal" href="#synscan.motors.motors.set_switch"><code class="docutils literal notranslate"><span class="pre">motors.set_switch()</span></code></a></li>
+<li><a class="reference internal" href="#synscan.motors.motors.track"><code class="docutils literal notranslate"><span class="pre">motors.track()</span></code></a></li>
+<li><a class="reference internal" href="#synscan.motors.motors.update_current_values"><code class="docutils literal notranslate"><span class="pre">motors.update_current_values()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#comm-module">comm module</a><ul>
+<li><a class="reference internal" href="#synscan.comm.comm"><code class="docutils literal notranslate"><span class="pre">comm</span></code></a><ul>
+<li><a class="reference internal" href="#synscan.comm.comm._hex2int"><code class="docutils literal notranslate"><span class="pre">comm._hex2int()</span></code></a></li>
+<li><a class="reference internal" href="#synscan.comm.comm._int2hex"><code class="docutils literal notranslate"><span class="pre">comm._int2hex()</span></code></a></li>
+<li><a class="reference internal" href="#synscan.comm.comm._send_cmd"><code class="docutils literal notranslate"><span class="pre">comm._send_cmd()</span></code></a></li>
+<li><a class="reference internal" href="#synscan.comm.comm._send_raw_cmd"><code class="docutils literal notranslate"><span class="pre">comm._send_raw_cmd()</span></code></a></li>
+<li><a class="reference internal" href="#synscan.comm.comm._test_comm"><code class="docutils literal notranslate"><span class="pre">comm._test_comm()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="cmdlinetools.html"
-                        title="previous chapter">synscanGoto</a></p>
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="cmdlinetools.html"
+                          title="previous chapter">synscanGoto</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -336,12 +398,12 @@ response, it is sent/received in this order: “1” “2”.</p></li>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -364,7 +426,7 @@ response, it is sent/received in this order: “1” “2”.</p></li>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2020, Nacho Mas.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
     </div>
   </body>
 </html>
