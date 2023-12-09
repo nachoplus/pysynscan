@@ -94,13 +94,13 @@ class motors(comm):
     '''
 
 
-    def __init__(self,udp_ip=UDP_IP,udp_port=UDP_PORT):
+    def __init__(self,udp_ip=UDP_IP,udp_port=UDP_PORT,serial_dev=None):
         '''Init UDP comunication '''      
         logging.basicConfig(
             format='%(asctime)s %(levelname)s:synscanMotor: %(message)s',
             level=LOGGING_LEVEL
             )
-        super(motors, self).__init__(udp_ip,udp_port)
+        super(motors, self).__init__(udp_ip,udp_port,serial_dev)
         self._init()
         self.update_current_values()
 
