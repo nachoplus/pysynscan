@@ -127,7 +127,7 @@ class motors(comm):
         return T1preset
 
 
-    def get_values(self,parameterDict):
+    def get_values(self,parameterDict,initDone=True):
         '''
         Send all cmd in the parameterDict for both axis and return
         a dictionary with the values.
@@ -145,7 +145,8 @@ class motors(comm):
                     logging.warning(error)
                     raise(NameError('getValuesError'))
             #Send init done
-            self._send_cmd('F',axis)  # Initialize
+            if initDone:
+                self._send_cmd('F',axis)  # Initialize
         return params
 
     def get_parameters(self):
@@ -170,7 +171,7 @@ class motors(comm):
                         'HighSpeedRatio':'g',       # Inquire High Speed Ratio
                         }
         try:
-            params=self.get_values(parameterDict)
+            params=self.get_values(parameterDict, initDone=True)
         except NameError as error:
             logging.warning(error)
             raise(NameError('getParametersError'))
@@ -506,7 +507,7 @@ class motors(comm):
                         }
         retrySec = 2
         try:
-          params=self.get_values(parameterDict)
+          params=self.get_values(parameterDict, initDone=False)
 
           for parameter in ['GotoTarget','Position']:
               for axis in range(1,3):
