@@ -17,20 +17,12 @@ UDP_PORT = int(os.getenv("SYNSCAN_UDP_PORT",11880))
 
 LOGGING_LEVEL=os.getenv("SYNSCAN_LOGGING_LEVEL",logging.INFO)
 
-class comm:
+class commUDP:
     '''
     UDP Comunication module.
-    Virtual. Used as base class. All members are protected
     '''
     def __init__(self,udp_ip=UDP_IP,udp_port=UDP_PORT):
         ''' Init the UDP socket '''
-       
-        logging.basicConfig(
-            format='%(asctime)s %(levelname)s:synscanComm %(message)s',
-            level=LOGGING_LEVEL
-            )
-        logging.info(f"UDP target IP: {udp_ip}")
-        logging.info(f"UDP target port: {udp_port}")
         self._sock = socket.socket(socket.AF_INET, # Internet
         socket.SOCK_DGRAM) # UDP
         self._sock.setblocking(0)
@@ -39,10 +31,9 @@ class comm:
         self.commOK=False
         self.lock= threading.Lock()
 
-    
-    def _send_raw_cmd(self,cmd,timeout_in_seconds=2):
-        '''Low level send command function ''' 
-        with self.lock:   
+    def cmd(self,cmd,timeout_in_seconds=2):
+        '''Low level send command function '''
+        with self.lock:
             self._sock.sendto(cmd,(self.udp_ip,self.udp_port))
             ready = select.select([self._sock], [], [], timeout_in_seconds)
             if ready[0]:
@@ -53,8 +44,59 @@ class comm:
                 self.commOK=False
                 logging.debug(f"Socket timeout. {timeout_in_seconds}s without response" )
                 raise(NameError('SynscanSocketTimeoutError'))
-                response = False        
+                response = False
         return response
+
+
+class commSerial:
+    '''
+    Serial Comunication module.
+    '''
+    def __init__(self,serial_dev):
+        import serial
+        ''' Init the serial port '''
+        self.serial = serial.Serial(serial_dev, 9600, timeout=.02)
+        self.lock = threading.Lock()
+        self.commOK=False
+
+    def cmd(self,cmd,timeout_in_seconds=2):
+        '''Low level send command function '''
+        with self.lock:
+            self.serial.write(cmd)
+            response = self.serial.readline()
+            while response and response[0] not in b'!=':
+                # Strip echo of command
+                response = response[1:]
+            if response:
+                self.commOK=True
+                logging.debug(f"response: {response}")
+            else:
+                self.commOK=False
+                logging.debug(f"Device timeout. {timeout_in_seconds}s without response" )
+                raise(NameError('SynscanSocketTimeoutError'))
+                response = False
+        return response
+
+
+class comm:
+    '''
+    Virtual. Used as base class. All members are protected
+    '''
+    def __init__(self,udp_ip=UDP_IP,udp_port=UDP_PORT,serial_dev=None):
+        ''' Init the UDP socket '''
+        logging.basicConfig(
+            format='%(asctime)s %(levelname)s:synscanComm %(message)s',
+            level=LOGGING_LEVEL
+            )
+        logging.info(f"UDP target IP: {udp_ip}")
+        logging.info(f"UDP target port: {udp_port}")
+        if serial_dev:
+            self.comm = commSerial(serial_dev)
+        else:
+            self.comm = commUDP(udp_ip,udp_port)
+
+    def _send_raw_cmd(self,cmd,timeout_in_seconds=2):
+        return self.comm.cmd(cmd, timeout_in_seconds)
 
     def _send_cmd(self,cmd,axis,data=None,ndigits=6):
         '''Command function '''
